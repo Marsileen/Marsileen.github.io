@@ -1,646 +1,191 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNL Major Finder - The Daily Nebraskan</title>
+    <title>Marsileen Alawdi | Home</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Import Fonts: Merriweather (Serif for Headlines) and Inter (Sans-serif for Body) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Merriweather:wght@700;900&display=swap" rel="stylesheet">
-    
-    <!-- Configure Tailwind for a journalistic look and custom fonts/colors -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        // Updated to a deeper, classic newspaper red
-                        'dn-red': '#CC0000', 
-                        'dn-gray': '#1A202C', // Dark gray for text/accents
-                    },
-                    fontFamily: {
-                        // Set Merriweather for a custom "headline" class
-                        headline: ['Merriweather', 'serif'],
-                        // Keep Inter as the default sans-serif for body text
-                        sans: ['Inter', 'sans-serif'], 
-                    },
-                }
-            }
-        }
-    </script>
+    <!-- Import Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom scrollbar styling for the results area */
-        #results-container::-webkit-scrollbar {
-            width: 8px;
-        }
-        #results-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-        #results-container::-webkit-scrollbar-thumb {
-            background: #cbd5e0; /* light gray */
-            border-radius: 4px;
-        }
-        #results-container::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0; /* medium gray */
-        }
-        .major-row:nth-child(odd) {
-            background-color: #f7fafc; /* light background for zebra striping */
-        }
-
-        /* Ensure College header sticks correctly */
-        .college-header {
-            top: 0px; /* Sticks to the top of the results-container */
-        }
-        
-        /* Ensure Table Header sticks below the College header (or directly to top if no college header is visible) */
-        .table-header {
-            top: 48px; /* Sticks just below the college header height (approx 48px) */
+        /* Apply Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
+<body class="bg-slate-50 text-slate-800 antialiased">
 
-    <!-- Header -->
-    <header class="bg-white shadow-md">
-        <div class="max-w-4xl mx-auto p-4 flex flex-col sm:flex-row items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <!-- Daily Nebraskan Logo -->
-                <img src="https://www.dailynebraskan.com/content/tncms/assets/v3/editorial/4/97/4977647a-bd51-11ed-9a1b-271c59e332ff.png"
-                     onerror="this.onerror=null;this.src='https://placehold.co/60x60/CC0000/white?text=DN'"
-                     alt="The Daily Nebraskan Logo"
-                     class="w-12 h-12 rounded-full ring-2 ring-dn-red"
-                     id="dn-logo">
-                <!-- Apply Merriweather for the headline font style -->
-                <h1 class="text-3xl font-headline font-black text-dn-gray">
-                    UNL Major Search
-                </h1>
+    <!-- Header / Navigation Bar -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-slate-200">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+                Marsileen Alawdi
+            </a>
+            <div class="flex space-x-6">
+                <a href="#about" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">About</a>
+                <a href="#projects" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">Projects</a>
             </div>
-            <p class="text-sm text-gray-500 mt-2 sm:mt-0">Data Visualization by The Daily Nebraskan</p>
-        </div>
+        </nav>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-4xl mx-auto p-4 mt-6">
-        <section class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-            <!-- Apply Merriweather for the section headline font style -->
-            <h2 class="text-xl font-headline font-bold text-dn-gray mb-4">Find Your Major and Enrollment Count</h2>
+    <!-- Main Content Area -->
+    <main>
 
-            <!-- Search Input -->
-            <div class="mb-6">
-                <label for="search-input" class="block text-sm font-medium text-gray-700 mb-1">Search Major or Specialization:</label>
-                <!-- Search input border uses the new dn-red color -->
-                <input type="text" id="search-input" placeholder="e.g., Computer Science, Finance, Biology"
-                       class="w-full p-3 border-2 border-dn-red/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-dn-red focus:border-dn-red transition duration-150 ease-in-out text-base shadow-sm">
-            </div>
+        <!-- Hero Section -->
+        <section class="container mx-auto px-6 py-24 md:py-32 text-center flex flex-col items-center">
+            <!-- Placeholder for a profile picture -->
+            <img 
+                src="https://placehold.co/144x144/e0e7ff/4f46e5?text=MA&font=inter" 
+                alt="Marsileen Alawdi initials" 
+                class="w-36 h-36 rounded-full mb-6 shadow-xl border-4 border-white"
+            >
+            <h1 class="text-5xl md:text-6xl font-bold mb-4">
+                Marsileen Alawdi
+            </h1>
+            <p class="text-2xl text-slate-600">
+                University of Nebraska–Lincoln Student
+            </p>
+            <p class="text-xl text-indigo-600 font-medium mt-2">
+                Global Studies & Journalism
+            </p>
+        </section>
 
-            <!-- Results Summary -->
-            <div id="summary" class="text-sm text-gray-600 mb-4">
-                Loading data...
-            </div>
+        <!-- About Me Section -->
+        <section id="about" class="py-24 bg-white border-y border-slate-200">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-16">
+                    About Me
+                </h2>
+                
+                <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
 
-            <!-- Results Container -->
-            <div id="results-container" class="max-h-96 overflow-y-auto border border-gray-300 rounded-lg relative">
-                <!-- Results will be injected here -->
+                    <!-- Card 1: Academics & Goals -->
+                    <div class="bg-slate-50 p-8 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="text-2xl font-semibold mb-6 flex items-center text-indigo-700">
+                            <!-- SVG Icon: Academic Cap -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.627 48.627 0 0 1 12 20.904a48.627 48.627 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.57 50.57 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
+                            </svg>
+                            Academics & Ambitions
+                        </h3>
+                        <p class="text-slate-700 mb-3 leading-relaxed">
+                            I am a student at the <strong>University of Nebraska–Lincoln (UNL)</strong>, originally from Lincoln, Nebraska.
+                        </p>
+                        <p class="text-slate-700 mb-3 leading-relaxed">
+                            I'm pursuing a double major in <strong>Global Studies</strong> and <strong>Journalism</strong>, along with a minor in <strong>French</strong>.
+                        </p>
+                        <p class="text-slate-700 mt-4 pt-4 border-t border-slate-300 italic leading-relaxed">
+                            My goal after graduation is to attend law school, with a strong interest in humanitarian law.
+                        </p>
+                    </div>
+
+                    <!-- Card 2: Involvement & Honors -->
+                    <div class="bg-slate-50 p-8 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="text-2xl font-semibold mb-6 flex items-center text-indigo-700">
+                            <!-- SVG Icon: Sparkles -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+                            </svg>
+                            Involvement & Honors
+                        </h3>
+                        <ul class="list-disc list-outside space-y-3 pl-5 text-slate-700 leading-relaxed">
+                            <li>
+                                Named to the Dean's List for both the College of Arts and Sciences and the College of Journalism (Fall 2024 & Spring 2024).
+                            </li>
+                            <li>
+                                Member of the <strong>Middle Eastern and North African Association</strong> (MENA).
+                            </li>
+                             <li>
+                                Member of the <strong>Yezidi club</strong> at UNL.
+                            </li>
+                            <li>
+                                Featured in student spotlights by the UNL College of Arts and Sciences and the Department of Modern Languages and Literatures.
+                            </li>
+                            <li>
+                                Recognized at the Lincoln Southwest High School Academic Honors Convocation (2021).
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
             </div>
         </section>
 
-        <!-- UPDATED FOOTER with Publication Date -->
-        <footer class="text-center text-xs text-gray-500 mt-8 pb-4">
-            <p>&copy; <span id="current-year"></span> The Daily Nebraskan.</p>
-            <!-- Hardcoded publication date for historical accuracy of the data -->
-            <p class="mt-1 text-gray-400">
-                **Published: October 9, 2025**. Data reflects the latest available enrollment counts.
-            </p>
-        </footer>
+        <!-- Projects Section -->
+        <section id="projects" class="py-24 bg-slate-100">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl font-bold text-center mb-6">
+                    Web Apps & Projects
+                </h2>
+                <p class="text-center text-lg text-slate-600 mb-16 max-w-3xl mx-auto">
+                    This is my personal collection of miscellaneous web applications and projects. Feel free to explore.
+                </p>
+
+                <!-- Project Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <!-- Placeholder Project Card 1 -->
+                    <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-300">
+                        <div class="p-6">
+                            <h4 class="font-semibold text-xl mb-2 text-indigo-700">Project Title 1</h4>
+                            <p class="text-slate-600 text-sm mb-6 h-12">
+                                A brief description of what this web application does and what tech it uses.
+                            </p>
+                        </div>
+                        <div class="mt-auto bg-slate-50 p-6">
+                            <a href="#" class="inline-block bg-indigo-600 text-white font-medium px-5 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                View App
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Placeholder Project Card 2 -->
+                    <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-300">
+                        <div class="p-6">
+                            <h4 class="font-semibold text-xl mb-2 text-indigo-700">Project Title 2</h4>
+                            <p class="text-slate-600 text-sm mb-6 h-12">
+                                Another cool project that showcases a particular skill or interest.
+                            </p>
+                        </div>
+                        <div class="mt-auto bg-slate-50 p-6">
+                            <a href="#" class="inline-block bg-indigo-600 text-white font-medium px-5 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                View App
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Placeholder Project Card 3 -->
+                    <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-300">
+                        <div class="p-6">
+                            <h4 class="font-semibold text-xl mb-2 text-indigo-700">Coming Soon...</h4>
+                            <p class="text-slate-600 text-sm mb-6 h-12">
+                                I'm always working on new things. Check back later for more web apps!
+                            </p>
+                        </div>
+                        <div class="mt-auto bg-slate-50 p-6">
+                            <span class="inline-block bg-slate-300 text-slate-500 font-medium px-5 py-2 rounded-lg cursor-not-allowed">
+                                Stay Tuned
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('current-year').textContent = new Date().getFullYear();
+    <!-- Footer -->
+    <footer class="py-12 bg-white border-t border-slate-200">
+        <div class="container mx-auto px-6 text-center text-slate-500">
+            <p>&copy; 2025 Marsileen Alawdi</p>
+            <p class="text-sm mt-1">Student at the <a href="https://www.unl.edu/" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 underline transition-colors">University of Nebraska–Lincoln</a></p>
+        </div>
+    </footer>
 
-            // The specific logo URL provided by the user is dynamically set here.
-            const logoPath = 'https://www.dailynebraskan.com/content/tncms/assets/v3/editorial/4/97/4977647a-bd51-11ed-9a1b-271c59e332ff.png';
-            document.getElementById('dn-logo').src = logoPath;
-            document.getElementById('dn-logo').onerror = function() {
-                // Fallback if the specific path fails (using the new dn-red in the placeholder)
-                this.src = 'https://placehold.co/60x60/CC0000/white?text=DN';
-            };
-
-
-            // -----------------------------------------------------------
-            // 1. EMBEDDED MAJOR DATA (Keeping data structure for context)
-            // -----------------------------------------------------------
-
-            const MAJOR_DATA = [
-                {"college":"Agri Sci and Natl Resources","major_name":"Ag Leadership, Educ And Comm","specialization":"-No Specialization-","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Ag Leadership, Educ And Comm","specialization":"Ag & Environment Sciences Comm","headcount":22},
-                {"college":"Agri Sci and Natl Resources","major_name":"Ag Leadership, Educ And Comm","specialization":"Agricultural Education","headcount":74},
-                {"college":"Agri Sci and Natl Resources","major_name":"Ag Leadership, Educ And Comm","specialization":"Leadership","headcount":9},
-                {"college":"Agri Sci and Natl Resources","major_name":"Ag Leadership, Educ And Comm","specialization":"Skilled and Technical Sciences","headcount":4},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agribusiness","specialization":"Agribusiness Management","headcount":115},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agribusiness","specialization":"Agricultural Banking & Finance","headcount":33},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agribusiness","specialization":"Livestock Industries","headcount":19},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agribusiness","specialization":"Pre-Law","headcount":3},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agribusiness","specialization":"-No Specialization-","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agribusiness","specialization":"Commodity Marketing & Merch","headcount":13},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural & Env Sci Comm","specialization":"Ag Science & Natural Resources","headcount":2},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Economics","specialization":"Applied Economics","headcount":46},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Economics","specialization":"Farm & Ranch Management","headcount":13},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Economics","specialization":"Pre-Law","headcount":2},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Economics","specialization":"Public Policy","headcount":8},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Economics","specialization":"Quantitative Analysis","headcount":2},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Education","specialization":"Agricultural Leadership","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Education","specialization":"Teaching","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Education","specialization":"Teaching with Biology","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Systems Tech","specialization":"Business","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Systems Tech","specialization":"Production","headcount":2},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Systems Tech","specialization":"Technical","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agricultural Systems Tech","specialization":"-No Specialization-","headcount":27},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agronomy","specialization":"Specialty Crop Production","headcount":7},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agronomy","specialization":"-No Specialization-","headcount":64},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agronomy","specialization":"Agronomic Crop Production","headcount":5},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agronomy","specialization":"Plant Protection","headcount":4},
-                {"college":"Agri Sci and Natl Resources","major_name":"Agronomy","specialization":"Plant Science Research","headcount":2},
-                {"college":"Agri Sci and Natl Resources","major_name":"Animal Science","specialization":"Animal Biology & Biotechnology","headcount":4},
-                {"college":"Agri Sci and Natl Resources","major_name":"Animal Science","specialization":"Business & Communications","headcount":3},
-                {"college":"Agri Sci and Natl Resources","major_name":"Animal Science","specialization":"Companion Animal Science","headcount":47},
-                {"college":"Agri Sci and Natl Resources","major_name":"Animal Science","specialization":"Equine Science","headcount":28},
-                {"college":"Agri Sci and Natl Resources","major_name":"Animal Science","specialization":"Food Animal Production & Mngt","headcount":20},
-                {"college":"Agri Sci and Natl Resources","major_name":"Animal Science","specialization":"Veterinary Animal Sciences","headcount":34},
-                {"college":"Agri Sci and Natl Resources","major_name":"Animal Science","specialization":"Biology, Biotech & Vet Sci","headcount":121},
-                {"college":"Agri Sci and Natl Resources","major_name":"Animal Science","specialization":"Food Animal Systems","headcount":65},
-                {"college":"Agri Sci and Natl Resources","major_name":"Applied Climate Science","specialization":"-No Specialization-","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Applied Science","specialization":"-No Specialization-","headcount":25},
-                {"college":"Agri Sci and Natl Resources","major_name":"Biochemistry","specialization":"Comp & Systems Biochemistry","headcount":7},
-                {"college":"Agri Sci and Natl Resources","major_name":"Biochemistry","specialization":"Standard","headcount":13},
-                {"college":"Agri Sci and Natl Resources","major_name":"Biochemistry","specialization":"Biochemical Analysis","headcount":10},
-                {"college":"Agri Sci and Natl Resources","major_name":"Biochemistry","specialization":"Cellular Biochemistry","headcount":73},
-                {"college":"Agri Sci and Natl Resources","major_name":"Data Science","specialization":"-No Specialization-","headcount":6},
-                {"college":"Agri Sci and Natl Resources","major_name":"Environmental Science","specialization":"Lake and Stream Restoration","headcount":9},
-                {"college":"Agri Sci and Natl Resources","major_name":"Environmental Science","specialization":"Soil Science","headcount":13},
-                {"college":"Agri Sci and Natl Resources","major_name":"Environmental Science","specialization":"-No Specialization-","headcount":9},
-                {"college":"Agri Sci and Natl Resources","major_name":"Environmental Science","specialization":"Climate Science","headcount":11},
-                {"college":"Agri Sci and Natl Resources","major_name":"Environmental Science","specialization":"Water Science","headcount":7},
-                {"college":"Agri Sci and Natl Resources","major_name":"Environmental Studies","specialization":"Natural Resources","headcount":2},
-                {"college":"Agri Sci and Natl Resources","major_name":"Environmental Studies","specialization":"Program Emphasis Area Opt 1","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Environmental Studies","specialization":"-No Specialization-","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Environmental Studies","specialization":"Environmental Studies Standard","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Envr & Sustainability Studies","specialization":"Natural Resources","headcount":6},
-                {"college":"Agri Sci and Natl Resources","major_name":"Envr & Sustainability Studies","specialization":"Pre-Law","headcount":5},
-                {"college":"Agri Sci and Natl Resources","major_name":"Envr & Sustainability Studies","specialization":"Public Health","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Envr & Sustainability Studies","specialization":"-No Specialization-","headcount":6},
-                {"college":"Agri Sci and Natl Resources","major_name":"Envr & Sustainability Studies","specialization":"Environmental Studies Standard","headcount":17},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"Conservation Biology","headcount":79},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"Fisheries Ecology & Management","headcount":4},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"Habitat Management","headcount":7},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"Law Enforcement","headcount":17},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"Nature-Based Entrepreneurship","headcount":2},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"Wildlife Ecology & Management","headcount":8},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"Zoo Animal Care","headcount":29},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"-No Specialization-","headcount":9},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"Fisheries Conservation & Mngmt","headcount":14},
-                {"college":"Agri Sci and Natl Resources","major_name":"Fisheries And Wildlife","specialization":"Wildlife Conservation & Mngmt","headcount":38},
-                {"college":"Agri Sci and Natl Resources","major_name":"Food Science And Technology","specialization":"-No Specialization-","headcount":64},
-                {"college":"Agri Sci and Natl Resources","major_name":"Food Science And Technology","specialization":"Food and Health","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Forensic Science","specialization":"Crime Scene Investigation","headcount":139},
-                {"college":"Agri Sci and Natl Resources","major_name":"Forensic Science","specialization":"Forensic Biology","headcount":87},
-                {"college":"Agri Sci and Natl Resources","major_name":"Forensic Science","specialization":"Forensic Chemistry","headcount":39},
-                {"college":"Agri Sci and Natl Resources","major_name":"Forensic Science","specialization":"Pre-Law","headcount":6},
-                {"college":"Agri Sci and Natl Resources","major_name":"Forensic Science","specialization":"-No Specialization-","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Grassland Systems","specialization":"Grassland Ecology & Management","headcount":5},
-                {"college":"Agri Sci and Natl Resources","major_name":"Grassland Systems","specialization":"Grazing Livestock Systems","headcount":3},
-                {"college":"Agri Sci and Natl Resources","major_name":"Insect Science","specialization":"IPM & Pest Science","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Insect Science","specialization":"Science","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Insect Science","specialization":"-No Specialization-","headcount":20},
-                {"college":"Agri Sci and Natl Resources","major_name":"Integrated Science","specialization":"-No Specialization-","headcount":13},
-                {"college":"Agri Sci and Natl Resources","major_name":"Mechanized Systems Management","specialization":"Business","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Mechanized Systems Management","specialization":"Production","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Mechanized Systems Management","specialization":"Technical","headcount":3},
-                {"college":"Agri Sci and Natl Resources","major_name":"Mechanized Systems Management","specialization":"-No Specialization-","headcount":3},
-                {"college":"Agri Sci and Natl Resources","major_name":"Microbiology","specialization":"-No Specialization-","headcount":31},
-                {"college":"Agri Sci and Natl Resources","major_name":"Natural Res & Environ Economic","specialization":"Environmental Economics","headcount":3},
-                {"college":"Agri Sci and Natl Resources","major_name":"Natural Res & Environ Economic","specialization":"-No Specialization-","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Pga Golf Management","specialization":"Club Management","headcount":44},
-                {"college":"Agri Sci and Natl Resources","major_name":"Pga Golf Management","specialization":"Golf Operations Management","headcount":105},
-                {"college":"Agri Sci and Natl Resources","major_name":"Pga Golf Management","specialization":"-No Specialization-","headcount":82},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"Entrepreneurship","headcount":3},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"Landscape Design & Management","headcount":17},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"Specialty Crop Production","headcount":2},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"-No Specialization-","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"Ecological Landscape Design","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"Flowers","headcount":4},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"Horticulture","headcount":32},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"Plant Science Research","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"Sustainable Landscape Mgmt","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant And Landscape Systems","specialization":"Turfgrass Science & Mgmt (Opt)","headcount":11},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant Biology","specialization":"Biotechnology","headcount":5},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant Biology","specialization":"Ecology & Management","headcount":4},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant Biology","specialization":"-No Specialization-","headcount":6},
-                {"college":"Agri Sci and Natl Resources","major_name":"Plant Biology","specialization":"Agricultural Biosciences","headcount":5},
-                {"college":"Agri Sci and Natl Resources","major_name":"Pre-Veterinary Medicine","specialization":"-No Specialization-","headcount":53},
-                {"college":"Agri Sci and Natl Resources","major_name":"Regional & Community Forestry","specialization":"Arboriculture","headcount":5},
-                {"college":"Agri Sci and Natl Resources","major_name":"Regional & Community Forestry","specialization":"-No Specialization-","headcount":1},
-                {"college":"Agri Sci and Natl Resources","major_name":"Regional & Community Forestry","specialization":"Urban Forestry Management","headcount":3},
-                {"college":"Agri Sci and Natl Resources","major_name":"Statistics And Data Analytics","specialization":"-No Specialization-","headcount":23},
-                {"college":"Agri Sci and Natl Resources","major_name":"Veterinary Science","specialization":"Biomedical Science","headcount":61},
-                {"college":"Agri Sci and Natl Resources","major_name":"Veterinary Science","specialization":"Veterinary Medicine Option","headcount":11},
-                {"college":"Agri Sci and Natl Resources","major_name":"Veterinary Science","specialization":"-No Specialization-","headcount":4},
-                {"college":"Agri Sci and Natl Resources","major_name":"Veterinary Technology","specialization":"-No Specialization-","headcount":4},
-                {"college":"Agri Sci and Natl Resources","major_name":"Water Science","specialization":"Watershed Management","headcount":1},
-                {"college":"Architecture","major_name":"Architectural Studies","specialization":"-No Specialization-","headcount":330},
-                {"college":"Architecture","major_name":"Interior Design","specialization":"-No Specialization-","headcount":145},
-                {"college":"Architecture","major_name":"Landscape Architecture","specialization":"-No Specialization-","headcount":41},
-                {"college":"Arts and Sciences","major_name":"Actuarial Science","specialization":"-No Specialization-","headcount":17},
-                {"college":"Arts and Sciences","major_name":"Anthropology","specialization":"Forensic Anthropology","headcount":3},
-                {"college":"Arts and Sciences","major_name":"Anthropology","specialization":"Museum Studies","headcount":1},
-                {"college":"Arts and Sciences","major_name":"Anthropology","specialization":"Standard","headcount":13},
-                {"college":"Arts and Sciences","major_name":"Anthropology","specialization":"-No Specialization-","headcount":44},
-                {"college":"Arts and Sciences","major_name":"Biochemistry","specialization":"-No Specialization-","headcount":23},
-                {"college":"Arts and Sciences","major_name":"Biochemistry","specialization":"Biochemical Analysis","headcount":18},
-                {"college":"Arts and Sciences","major_name":"Biochemistry","specialization":"Cellular Biochemistry","headcount":183},
-                {"college":"Arts and Sciences","major_name":"Biochemistry","specialization":"Computational Biochemistry","headcount":2},
-                {"college":"Arts and Sciences","major_name":"Biological Sciences","specialization":"Standard","headcount":446},
-                {"college":"Arts and Sciences","major_name":"Biological Sciences","specialization":"-No Specialization-","headcount":2},
-                {"college":"Arts and Sciences","major_name":"Biological Sciences","specialization":"Human Health and Disease","headcount":246},
-                {"college":"Arts and Sciences","major_name":"Chemistry","specialization":"Professional","headcount":28},
-                {"college":"Arts and Sciences","major_name":"Chemistry","specialization":"-No Specialization-","headcount":6},
-                {"college":"Arts and Sciences","major_name":"Chemistry","specialization":"Chemical Biology","headcount":49},
-                {"college":"Arts and Sciences","major_name":"Classics And Religious Studies","specialization":"Classical Languages","headcount":4},
-                {"college":"Arts and Sciences","major_name":"Classics And Religious Studies","specialization":"Classics","headcount":4},
-                {"college":"Arts and Sciences","major_name":"Classics And Religious Studies","specialization":"Religious Studies","headcount":4},
-                {"college":"Arts and Sciences","major_name":"Communication Studies","specialization":"Comm, Health & Well-Being","headcount":2},
-                {"college":"Arts and Sciences","major_name":"Communication Studies","specialization":"Diversity, Culture & Glbl Comm","headcount":3},
-                {"college":"Arts and Sciences","major_name":"Communication Studies","specialization":"-No Specialization-","headcount":70},
-                {"college":"Arts and Sciences","major_name":"Computer Science","specialization":"-No Specialization-","headcount":1},
-                {"college":"Arts and Sciences","major_name":"Data Science","specialization":"-No Specialization-","headcount":38},
-                {"college":"Arts and Sciences","major_name":"Economics","specialization":"-No Specialization-","headcount":22},
-                {"college":"Arts and Sciences","major_name":"English","specialization":"-No Specialization-","headcount":121},
-                {"college":"Arts and Sciences","major_name":"Environmental Studies","specialization":"Biosphere & Earth Sys Studies","headcount":1},
-                {"college":"Arts and Sciences","major_name":"Environmental Studies","specialization":"Policy, Advocacy & Soc Justice","headcount":4},
-                {"college":"Arts and Sciences","major_name":"Envr & Sustainability Studies","specialization":"Biosphere & Earth Sys Studies","headcount":5},
-                {"college":"Arts and Sciences","major_name":"Envr & Sustainability Studies","specialization":"Policy, Advocacy & Soc Justice","headcount":10},
-                {"college":"Arts and Sciences","major_name":"Ethnic Studies","specialization":"Indigenous Studies","headcount":1},
-                {"college":"Arts and Sciences","major_name":"Ethnic Studies","specialization":"Latinx & Latin Amer Studies","headcount":1},
-                {"college":"Arts and Sciences","major_name":"Ethnic Studies","specialization":"Multi-Ethnic Studies Opt","headcount":3},
-                {"college":"Arts and Sciences","major_name":"Film Studies","specialization":"-No Specialization-","headcount":45},
-                {"college":"Arts and Sciences","major_name":"French","specialization":"-No Specialization-","headcount":10},
-                {"college":"Arts and Sciences","major_name":"Geography","specialization":"-No Specialization-","headcount":19},
-                {"college":"Arts and Sciences","major_name":"Geology","specialization":"-No Specialization-","headcount":35},
-                {"college":"Arts and Sciences","major_name":"German","specialization":"-No Specialization-","headcount":4},
-                {"college":"Arts and Sciences","major_name":"Global Studies","specialization":"-No Specialization-","headcount":52},
-                {"college":"Arts and Sciences","major_name":"History","specialization":"-No Specialization-","headcount":123},
-                {"college":"Arts and Sciences","major_name":"Individualized Prog Of Studies","specialization":"-No Specialization-","headcount":5},
-                {"college":"Arts and Sciences","major_name":"Mathematics","specialization":"Discrete Math & Cryptography","headcount":10},
-                {"college":"Arts and Sciences","major_name":"Mathematics","specialization":"Education","headcount":5},
-                {"college":"Arts and Sciences","major_name":"Mathematics","specialization":"Math of Physical Phenomena","headcount":12},
-                {"college":"Arts and Sciences","major_name":"Mathematics","specialization":"Mathematical Biology","headcount":2},
-                {"college":"Arts and Sciences","major_name":"Mathematics","specialization":"Mathematical Finance","headcount":17},
-                {"college":"Arts and Sciences","major_name":"Mathematics","specialization":"Standard","headcount":44},
-                {"college":"Arts and Sciences","major_name":"Mathematics","specialization":"Statistics and Data Science","headcount":19},
-                {"college":"Arts and Sciences","major_name":"Mathematics","specialization":"-No Specialization-","headcount":1},
-                {"college":"Arts and Sciences","major_name":"Meteorology-Climatology","specialization":"-No Specialization-","headcount":51},
-                {"college":"Arts and Sciences","major_name":"Microbiology","specialization":"-No Specialization-","headcount":60},
-                {"college":"Arts and Sciences","major_name":"Philosophy","specialization":"Ethics and Law","headcount":15},
-                {"college":"Arts and Sciences","major_name":"Philosophy","specialization":"Standard","headcount":15},
-                {"college":"Arts and Sciences","major_name":"Physics","specialization":"Computational Physics","headcount":2},
-                {"college":"Arts and Sciences","major_name":"Physics","specialization":"Professional","headcount":15},
-                {"college":"Arts and Sciences","major_name":"Physics","specialization":"-No Specialization-","headcount":32},
-                {"college":"Arts and Sciences","major_name":"Political Science","specialization":"-No Specialization-","headcount":246},
-                {"college":"Arts and Sciences","major_name":"Psychology","specialization":"Clinical Science & Human Srvcs","headcount":353},
-                {"college":"Arts and Sciences","major_name":"Psychology","specialization":"Clinical Science &Human Srvcs","headcount":6},
-                {"college":"Arts and Sciences","major_name":"Psychology","specialization":"Neuroscience","headcount":104},
-                {"college":"Arts and Sciences","major_name":"Psychology","specialization":"Psychological Science","headcount":402},
-                {"college":"Arts and Sciences","major_name":"Psychology","specialization":"-No Specialization-","headcount":5},
-                {"college":"Arts and Sciences","major_name":"Sociology","specialization":"-No Specialization-","headcount":55},
-                {"college":"Arts and Sciences","major_name":"Spanish","specialization":"-No Specialization-","headcount":17},
-                {"college":"Arts and Sciences","major_name":"Women's & Gender Studies","specialization":"-No Specialization-","headcount":9},
-                {"college":"Business","major_name":"Accounting","specialization":"-No Specialization-","headcount":542},
-                {"college":"Business","major_name":"Accounting (Raikes)","specialization":"-No Specialization-","headcount":1},
-                {"college":"Business","major_name":"Actuarial Science","specialization":"-No Specialization-","headcount":160},
-                {"college":"Business","major_name":"Actuarial Science (Raikes)","specialization":"-No Specialization-","headcount":11},
-                {"college":"Business","major_name":"Agribusiness","specialization":"-No Specialization-","headcount":34},
-                {"college":"Business","major_name":"Business Admin (Raikes)","specialization":"-No Specialization-","headcount":3},
-                {"college":"Business","major_name":"Business Administration","specialization":"-No Specialization-","headcount":865},
-                {"college":"Business","major_name":"Business Analytics","specialization":"-No Specialization-","headcount":39},
-                {"college":"Business","major_name":"Business Analytics (Raikes)","specialization":"-No Specialization-","headcount":2},
-                {"college":"Business","major_name":"Business And Law","specialization":"-No Specialization-","headcount":179},
-                {"college":"Business","major_name":"Business And Law (Raikes)","specialization":"-No Specialization-","headcount":1},
-                {"college":"Business","major_name":"Economics","specialization":"-No Specialization-","headcount":99},
-                {"college":"Business","major_name":"Economics (Raikes)","specialization":"-No Specialization-","headcount":1},
-                {"college":"Business","major_name":"Finance","specialization":"Banking and Risk Management","headcount":36},
-                {"college":"Business","major_name":"Finance","specialization":"Finance","headcount":630},
-                {"college":"Business","major_name":"Finance","specialization":"Investments","headcount":148},
-                {"college":"Business","major_name":"Finance (Raikes)","specialization":"Finance","headcount":3},
-                {"college":"Business","major_name":"International Business","specialization":"Economics","headcount":7},
-                {"college":"Business","major_name":"International Business","specialization":"Finance","headcount":5},
-                {"college":"Business","major_name":"International Business","specialization":"International Business","headcount":34},
-                {"college":"Business","major_name":"International Business","specialization":"Management","headcount":11},
-                {"college":"Business","major_name":"International Business","specialization":"Marketing","headcount":25},
-                {"college":"Business","major_name":"International Business","specialization":"Supply Chain Management","headcount":7},
-                {"college":"Business","major_name":"Management","specialization":"Clifton Builders","headcount":25},
-                {"college":"Business","major_name":"Management","specialization":"Human Resources Management","headcount":43},
-                {"college":"Business","major_name":"Management","specialization":"Leadership in Organization","headcount":17},
-                {"college":"Business","major_name":"Management","specialization":"Management","headcount":273},
-                {"college":"Business","major_name":"Management","specialization":"Entrepreneurship & Innovation","headcount":94},
-                {"college":"Business","major_name":"Management (Raikes)","specialization":"Leadership in Organization","headcount":1},
-                {"college":"Business","major_name":"Management (Raikes)","specialization":"Management","headcount":6},
-                {"college":"Business","major_name":"Management (Raikes)","specialization":"Entrepreneurship & Innovation","headcount":1},
-                {"college":"Business","major_name":"Marketing","specialization":"-No Specialization-","headcount":614},
-                {"college":"Business","major_name":"Marketing (Raikes)","specialization":"-No Specialization-","headcount":1},
-                {"college":"Business","major_name":"Supply Chain Management","specialization":"-No Specialization-","headcount":65},
-                {"college":"Business","major_name":"Supply Chain Mgmt (Raikes)","specialization":"-No Specialization-","headcount":1},
-                {"college":"Education and Human Sciences","major_name":"Chld,Yth&Fam Studies","specialization":"Erly Child Educ in Mobile Soc","headcount":5},
-                {"college":"Education and Human Sciences","major_name":"Chld,Yth&Fam Studies","specialization":"Human Development &Family Sci","headcount":295},
-                {"college":"Education and Human Sciences","major_name":"Chld,Yth&Fam Studies","specialization":"Inclusive Early Childhood Educ","headcount":33},
-                {"college":"Education and Human Sciences","major_name":"Chld,Yth&Fam Studies","specialization":"Fam & Cons Sci Occupational","headcount":26},
-                {"college":"Education and Human Sciences","major_name":"Comm Sciences & Disorders","specialization":"-No Specialization-","headcount":142},
-                {"college":"Education and Human Sciences","major_name":"Elem Educ & Early Child Educ","specialization":"Elem Ed K-6 & Erly Chld Educ","headcount":22},
-                {"college":"Education and Human Sciences","major_name":"Elem Educ & Early Child Educ","specialization":"-No Specialization-","headcount":24},
-                {"college":"Education and Human Sciences","major_name":"Elem Educ & Special Educ K-6","specialization":"Elementary Education & Special","headcount":43},
-                {"college":"Education and Human Sciences","major_name":"Elem Educ & Special Educ K-6","specialization":"-No Specialization-","headcount":38},
-                {"college":"Education and Human Sciences","major_name":"Elementary Education","specialization":"Elementary Education (K-6)","headcount":194},
-                {"college":"Education and Human Sciences","major_name":"Elementary Education","specialization":"-No Specialization-","headcount":207},
-                {"college":"Education and Human Sciences","major_name":"Hospit, Rest & Tour Mngt (Ehs)","headcount":99},
-                {"college":"Education and Human Sciences","major_name":"Nutrition & Health Sciences","specialization":"Community Health and Wellness","headcount":241},
-                {"college":"Education and Human Sciences","major_name":"Nutrition & Health Sciences","specialization":"Nutr, Exercise & Health Sci","headcount":490},
-                {"college":"Education and Human Sciences","major_name":"Nutrition & Health Sciences","specialization":"Nutrition Science","headcount":78},
-                {"college":"Education and Human Sciences","major_name":"Nutrition & Health Sciences","specialization":"Nutrition & Biomedical Science","headcount":14},
-                {"college":"Education and Human Sciences","major_name":"Pre-Physical Therapy","specialization":"-No Specialization-","headcount":11},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Biology Education","headcount":6},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Business, Mrktg, & Info Tech","headcount":14},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Earth and Space Science Educ","headcount":1},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"English Language Arts Educ","headcount":38},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"French Education","headcount":2},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Mathematics Education","headcount":37},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Science Education","headcount":11},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Secondary English Education","headcount":40},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Spanish Education","headcount":8},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Arabic Education","headcount":1},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Biology Education (Endr)","headcount":1},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Chinese Education","headcount":3},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"German Education","headcount":2},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Japanese Education","headcount":1},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Physics Education","headcount":2},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Secondary English Educ (Endr)","headcount":1},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Social Science Educ (Acc)","headcount":2},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Social Studies Educ (Endr)","headcount":3},
-                {"college":"Education and Human Sciences","major_name":"Secondary Education","specialization":"Social Studies Education","headcount":111},
-                {"college":"Education and Human Sciences","major_name":"Special Education 7-12","specialization":"Special Education (7-12)","headcount":10},
-                {"college":"Education and Human Sciences","major_name":"Special Education 7-12","specialization":"-No Specialization-","headcount":12},
-                {"college":"Education and Human Sciences","major_name":"Special Education K-6","specialization":"-No Specialization-","headcount":5},
-                {"college":"Education and Human Sciences","major_name":"Special Education K-6","specialization":"Special Education K-6","headcount":10},
-                {"college":"Education and Human Sciences","major_name":"Text ,Merch & Fashion Design","specialization":"Communications","headcount":3},
-                {"college":"Education and Human Sciences","major_name":"Text ,Merch & Fashion Design","specialization":"Merchandising","headcount":17},
-                {"college":"Education and Human Sciences","major_name":"Text ,Merch & Fashion Design","specialization":"Textile Science","headcount":1},
-                {"college":"Education and Human Sciences","major_name":"Text ,Merch & Fashion Design","specialization":"Textile and Apparel Design","headcount":39},
-                {"college":"Engineering","major_name":"Agricultural Engineering","specialization":"-No Specialization-","headcount":42},
-                {"college":"Engineering","major_name":"Architectural Engineering","specialization":"-No Specialization-","headcount":169},
-                {"college":"Engineering","major_name":"Biological Systems Engineering","specialization":"-No Specialization-","headcount":150},
-                {"college":"Engineering","major_name":"Chemical Engineering","specialization":"-No Specialization-","headcount":166},
-                {"college":"Engineering","major_name":"Civil Engineering","specialization":"-No Specialization-","headcount":425},
-                {"college":"Engineering","major_name":"Computer Engineering","specialization":"-No Specialization-","headcount":196},
-                {"college":"Engineering","major_name":"Computer Engineering","specialization":"CENG Comp Engineering (Acc)","headcount":1},
-                {"college":"Engineering","major_name":"Computer Engineering (Raikes)","specialization":"-No Specialization-","headcount":6},
-                {"college":"Engineering","major_name":"Computer Science","specialization":"-No Specialization-","headcount":414},
-                {"college":"Engineering","major_name":"Computer Science","specialization":"CMPS Comp Engineering (Acc)","headcount":1},
-                {"college":"Engineering","major_name":"Computer Science","specialization":"CMPS Computer Science (Acc)","headcount":6},
-                {"college":"Engineering","major_name":"Computer Science (Raikes)","specialization":"-No Specialization-","headcount":82},
-                {"college":"Engineering","major_name":"Computer Science (Raikes)","specialization":"JECM Comp Science (Raikes Acc)","headcount":1},
-                {"college":"Engineering","major_name":"Construction Engineering","specialization":"-No Specialization-","headcount":62},
-                {"college":"Engineering","major_name":"Construction Management","specialization":"-No Specialization-","headcount":465},
-                {"college":"Engineering","major_name":"Data Science","specialization":"-No Specialization-","headcount":28},
-                {"college":"Engineering","major_name":"Electrical Engineering","specialization":"-No Specialization-","headcount":389},
-                {"college":"Engineering","major_name":"Engineering General","specialization":"-No Specialization-","headcount":13},
-                {"college":"Engineering","major_name":"Environmental Engineering","specialization":"-No Specialization-","headcount":62},
-                {"college":"Engineering","major_name":"Interdisciplinary Studies(Eng)","specialization":"-No Specialization-","headcount":1},
-                {"college":"Engineering","major_name":"Mechanical Engineering","specialization":"-No Specialization-","headcount":890},
-                {"college":"Engineering","major_name":"Pre-Biologcl Systms Engineerng","specialization":"-No Specialization-","headcount":1},
-                {"college":"Engineering","major_name":"Pre-Engineering","specialization":"-No Specialization-","headcount":25},
-                {"college":"Engineering","major_name":"Pre-Mechanical Engineering","specialization":"-No Specialization-","headcount":48},
-                {"college":"Engineering","major_name":"Software Engineering","specialization":"-No Specialization-","headcount":217},
-                {"college":"Engineering","major_name":"Software Engineering (Raikes)","specialization":"-No Specialization-","headcount":7},
-                {"college":"Explore Center Undergraduate","major_name":"Pre-Engineering","specialization":"-No Specialization-","headcount":37},
-                {"college":"Explore Center Undergraduate","major_name":"Pre-Health","specialization":"-No Specialization-","headcount":863},
-                {"college":"Explore Center Undergraduate","major_name":"Pre-Law","specialization":"-No Specialization-","headcount":50},
-                {"college":"Explore Center Undergraduate","major_name":"Undeclared - Undergraduate","specialization":"-No Specialization-","headcount":387},
-                {"college":"Fine and Performing Arts","major_name":"Acting","specialization":"-No Specialization-","headcount":43},
-                {"college":"Fine and Performing Arts","major_name":"Art","specialization":"Ceramics","headcount":14},
-                {"college":"Fine and Performing Arts","major_name":"Art","specialization":"Drawing","headcount":24},
-                {"college":"Fine and Performing Arts","major_name":"Art","specialization":"Interdisciplinary","headcount":3},
-                {"college":"Fine and Performing Arts","major_name":"Art","specialization":"Painting","headcount":16},
-                {"college":"Fine and Performing Arts","major_name":"Art","specialization":"Photography","headcount":9},
-                {"college":"Fine and Performing Arts","major_name":"Art","specialization":"Printmaking","headcount":4},
-                {"college":"Fine and Performing Arts","major_name":"Art","specialization":"Sculpture","headcount":11},
-                {"college":"Fine and Performing Arts","major_name":"Art","specialization":"Studio Arts","headcount":5},
-                {"college":"Fine and Performing Arts","major_name":"Art","specialization":"-No Specialization-","headcount":51},
-                {"college":"Fine and Performing Arts","major_name":"Art History And Criticism","specialization":"-No Specialization-","headcount":10},
-                {"college":"Fine and Performing Arts","major_name":"Dance","specialization":"-No Specialization-","headcount":24},
-                {"college":"Fine and Performing Arts","major_name":"Emerging Media Arts","specialization":"-No Specialization-","headcount":137},
-                {"college":"Fine and Performing Arts","major_name":"Graphic Arts","specialization":"-No Specialization-","headcount":3},
-                {"college":"Fine and Performing Arts","major_name":"Graphic Design","specialization":"-No Specialization-","headcount":168},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Bassoon","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Cello","headcount":3},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Clarinet","headcount":5},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Composition","headcount":13},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Double Bass","headcount":2},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Euphonium","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Flute","headcount":3},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"French Horn","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Harp","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Percussion","headcount":6},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Piano","headcount":7},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Saxophone","headcount":7},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Trombone","headcount":7},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Trumpet","headcount":4},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Tuba","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Viola","headcount":4},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Violin","headcount":6},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Voice","headcount":28},
-                {"college":"Fine and Performing Arts","major_name":"Music","specialization":"Organ","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Bassoon","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Cello","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Clarinet","headcount":4},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Composition","headcount":6},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Double Bass","headcount":4},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Euphonium","headcount":2},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Flute","headcount":5},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"French Horn","headcount":6},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Guitar","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Oboe","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Percussion","headcount":10},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Piano","headcount":3},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Saxophone","headcount":8},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Trombone","headcount":4},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Trumpet","headcount":6},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Tuba","headcount":1},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Viola","headcount":3},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Violin","headcount":3},
-                {"college":"Fine and Performing Arts","major_name":"Music Education","specialization":"Voice","headcount":69},
-                {"college":"Fine and Performing Arts","major_name":"Theatre","specialization":"Design & Technical Production","headcount":34},
-                {"college":"Fine and Performing Arts","major_name":"Theatre","specialization":"Theatre Arts","headcount":9},
-                {"college":"Fine and Performing Arts","major_name":"Theatre","specialization":"-No Specialization-","headcount":3},
-                {"college":"Fine and Performing Arts","major_name":"Theatre","specialization":"Theatre Creation","headcount":4},
-                {"college":"Fine and Performing Arts","major_name":"Theatre","specialization":"Theatre Leadership/Management","headcount":7},
-                {"college":"Journalism & Mass Comm","major_name":"Advertising & Public Relations","specialization":"-No Specialization-","headcount":393},
-                {"college":"Journalism & Mass Comm","major_name":"Advertising & Public Relations","specialization":"ADPR Int Media Comm (Acc)","headcount":4},
-                {"college":"Journalism & Mass Comm","major_name":"Broadcasting","specialization":"Media Production","headcount":124},
-                {"college":"Journalism & Mass Comm","major_name":"Broadcasting","specialization":"News","headcount":27},
-                {"college":"Journalism & Mass Comm","major_name":"Broadcasting","specialization":"-No Specialization-","headcount":1},
-                {"college":"Journalism & Mass Comm","major_name":"Journalism","specialization":"-No Specialization-","headcount":125},
-                {"college":"Journalism & Mass Comm","major_name":"Sports Media And Communication","specialization":"-No Specialization-","headcount":379},
-                {"college":"Journalism & Mass Comm","major_name":"Sports Media And Communication","specialization":"SPMC Int Media Comm (Acc)","headcount":1},
-                {"college":"Journalism & Mass Comm","major_name":"Sports Media And Communication","specialization":"SPMC Prof Journalism (Acc)","headcount":1},
-                {"college":"Other (Intercampus & Visitors)","major_name":"Intercampus - Ncta Undergrad","specialization":"-No Specialization-","headcount":1},
-                {"college":"Other (Intercampus & Visitors)","major_name":"Intercampus - Unk Undergrad","specialization":"-No Specialization-","headcount":3},
-                {"college":"Other (Intercampus & Visitors)","major_name":"Intercampus - Uno Undergrad","specialization":"-No Specialization-","headcount":5},
-                {"college":"Other (Intercampus & Visitors)","major_name":"Nebraska Now","specialization":"-No Specialization-","headcount":95},
-                {"college":"Other (Intercampus & Visitors)","major_name":"Undergrad Visiting Consortium","specialization":"-No Specialization-","headcount":25},
-                {"college":"Other (Intercampus & Visitors)","major_name":"Visiting","specialization":"-No Specialization-","headcount":13},
-                {"college":"UNO - Public Affairs & Comm Service","major_name":"Criminology & Criminal Justice","specialization":"-No Specialization-","headcount":415},
-                {"college":"Total","major_name":"Total","specialization":"Total","headcount":19791}
-            ];
-
-            // Filter out the 'Total' entry for the main search
-            const FILTERABLE_MAJORS = MAJOR_DATA.filter(m => m.major_name !== 'Total');
-            const totalHeadcount = MAJOR_DATA.find(m => m.major_name === 'Total')?.headcount || 0;
-
-            const searchInput = document.getElementById('search-input');
-            const resultsContainer = document.getElementById('results-container');
-            const summaryElement = document.getElementById('summary');
-
-            /**
-             * Groups the filtered major data by college for better display.
-             * @param {Array} majors - The array of major objects.
-             * @returns {Object} - An object with college names as keys and arrays of majors as values.
-             */
-            function groupMajorsByCollege(majors) {
-                return majors.reduce((acc, major) => {
-                    const college = major.college;
-                    if (!acc[college]) {
-                        acc[college] = [];
-                    }
-                    acc[college].push(major);
-                    return acc;
-                }, {});
-            }
-
-            /**
-             * Renders the filtered results to the DOM.
-             * @param {Array} filteredMajors - The array of major objects to display.
-             */
-            function renderResults(filteredMajors) {
-                // Update summary text
-                const searchString = searchInput.value.trim();
-                const totalCount = filteredMajors.reduce((sum, m) => sum + m.headcount, 0);
-
-                if (searchString === "") {
-                    summaryElement.innerHTML = `Showing **${FILTERABLE_MAJORS.length} records** across all majors. Total enrollment: **${totalHeadcount.toLocaleString()}** students.`;
-                } else {
-                    summaryElement.innerHTML = `Found **${filteredMajors.length} matches** for "**${searchString}**" (Total enrollment in results: **${totalCount.toLocaleString()}** students).`;
-                }
-
-
-                if (filteredMajors.length === 0) {
-                    resultsContainer.innerHTML = `
-                        <div class="p-6 text-center text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto text-dn-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172A4 4 0 0112 11h0a4 4 0 014 4.828l3.172-3.172a1 1 0 00-1.414-1.414L16 13.586V7a1 1 0 10-2 0v6.586l-1.757-1.757a1 1 0 00-1.414 1.414l3.172 3.172z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21v-2a4 4 0 01-4-4v-7l-1 1a1 1 0 01-1.414-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414l-1-1v7a2 2 0 002 2h2a2 2 0 002-2v-7l-1-1a1 1 0 011.414-1.414l3 3a1 1 0 010 1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414l-1-1v7a4 4 0 01-4 4v2"/>
-                            </svg>
-                            <p class="mt-2">No results found. Try simplifying your search terms.</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                const grouped = groupMajorsByCollege(filteredMajors);
-                let html = '';
-
-                // Table Header Row - Sticky to the top of the scrollable box
-                html += `
-                    <div class="table-header hidden sm:grid grid-cols-12 text-xs font-bold text-dn-gray bg-gray-200 sticky z-20 border-b border-gray-300 p-3">
-                        <div class="col-span-4">Major</div>
-                        <div class="col-span-5">Specialization</div>
-                        <div class="col-span-3 text-right">Headcount</div>
-                    </div>
-                `;
-
-                for (const college in grouped) {
-                    // College heading uses the headline font for a strong visual break
-                    html += `
-                        <div class="bg-gray-100 p-3 sticky college-header z-10 border-b border-gray-300">
-                            <h3 class="text-lg font-headline font-bold text-dn-gray">${college}</h3>
-                        </div>
-                        <div class="divide-y divide-gray-200">
-                    `;
-                    grouped[college].forEach((major, index) => {
-                        // NEW LOGIC: Always display specialization, replacing dash placeholder with "General Track"
-                        const specializationDisplay = major.specialization === '-No Specialization-' 
-                            ? '<span class="text-gray-500 italic">General Track</span>'
-                            : `<span class="text-dn-gray font-medium">${major.specialization}</span>`;
-
-                        // Use a responsive grid layout
-                        html += `
-                            <div class="major-row p-3 grid grid-cols-12 gap-2 items-center text-sm transition duration-100 hover:bg-dn-red/5">
-                                <!-- Major Name (Col 4 on desktop, Col 12 on mobile) -->
-                                <div class="col-span-12 sm:col-span-4 font-semibold text-gray-800">
-                                    ${major.major_name}
-                                </div>
-                                
-                                <!-- Specialization (Col 5 on desktop, Col 9 on mobile) -->
-                                <div class="col-span-9 sm:col-span-5 pl-4 sm:pl-0">
-                                    <span class="text-xs text-dn-red font-medium sm:hidden">Specialization: </span>
-                                    ${specializationDisplay}
-                                </div>
-                                
-                                <!-- Headcount (Col 3 on desktop, Col 3 on mobile) -->
-                                <div class="col-span-3 sm:col-span-3 text-right">
-                                    <span class="text-gray-600 font-bold text-lg sm:text-base">${major.headcount.toLocaleString()}</span>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    html += `</div>`;
-                }
-
-                resultsContainer.innerHTML = html;
-            }
-
-            /**
-             * Handles the input event, performing real-time filtering.
-             */
-            function handleSearch() {
-                const query = searchInput.value.toLowerCase().trim();
-
-                // If the query is empty, show all majors
-                if (query === "") {
-                    renderResults(FILTERABLE_MAJORS);
-                    return;
-                }
-
-                // Filter the data: Match if query is in major name OR specialization
-                const filtered = FILTERABLE_MAJORS.filter(major => {
-                    const majorMatch = major.major_name.toLowerCase().includes(query);
-                    const specializationMatch = major.specialization.toLowerCase().includes(query);
-                    return majorMatch || specializationMatch;
-                });
-
-                renderResults(filtered);
-            }
-
-            // -----------------------------------------------------------
-            // 2. EVENT LISTENER
-            // -----------------------------------------------------------
-            searchInput.addEventListener('input', handleSearch);
-
-            // -----------------------------------------------------------
-            // 3. INITIAL LOAD
-            // -----------------------------------------------------------
-            renderResults(FILTERABLE_MAJORS);
-        });
-    </script>
 </body>
 </html>
