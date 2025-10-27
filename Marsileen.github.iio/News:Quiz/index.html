@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebraska News Quiz</title>
+    <!-- Load Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Use the Inter font family */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for answer buttons */
+        .option-btn.selected {
+            background-color: #fef2f2; /* red-50 */
+            border-color: #ef4444; /* red-500 */
+            color: #b91c1c; /* red-700 */
+            font-weight: 600;
+        }
+        .option-btn.correct {
+            background-color: #f0fdf4; /* green-50 */
+            border-color: #22c55e; /* green-500 */
+            color: #15803d; /* green-700 */
+            font-weight: 600;
+        }
+        .option-btn.incorrect {
+            background-color: #fef2f2; /* red-50 */
+            border-color: #ef4444; /* red-500 */
+            color: #b91c1c; /* red-700 */
+            font-weight: 600;
+        }
+        .option-btn:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Main Quiz Container -->
+    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-xl">
+
+        <!-- Start Card -->
+        <div id="start-card">
+            <h1 class="text-3xl font-bold text-center text-red-800 mb-2">Nebraska Volleyball</h1>
+            <h2 class="text-2xl font-semibold text-center text-gray-700 mb-6">News Quiz</h2>
+            <p class="text-center text-gray-600 mb-8">Test your knowledge! This quiz will ask you 5 random questions based on recent Daily Nebraskan articles.</p>
+            <button id="start-btn" class="w-full bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-red-800 transition-all duration-200 text-lg">
+                Start Quiz
+            </button>
+        </div>
+
+        <!-- Quiz Card (Hidden by default) -->
+        <div id="quiz-card" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-red-800">Question <span id="question-number">1</span> of 5</h2>
+                <div class="text-lg font-semibold text-gray-600">Score: <span id="score-display">0</span></div>
+            </div>
+            
+            <!-- Question Text -->
+            <p id="question-text" class="text-lg text-gray-800 mb-6 min-h-[6rem]">
+                Loading question...
+            </p>
+
+            <!-- Answer Options -->
+            <div id="options-container" class="space-y-3 mb-6">
+                <!-- Options will be dynamically inserted here -->
+            </div>
+
+            <!-- Feedback Text -->
+            <p id="feedback-text" class="text-center font-semibold text-lg min-h-[2rem] mb-4"></p>
+
+            <!-- Action Buttons -->
+            <button id="check-btn" class="w-full bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-red-800 transition-all duration-200 text-lg" disabled>
+                Check Answer
+            </button>
+            <button id="next-btn" class="hidden w-full bg-slate-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-slate-800 transition-all duration-200 text-lg">
+                Next Question
+            </button>
+        </div>
+
+        <!-- Score Card (Hidden by default) -->
+        <div id="score-card" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Quiz Complete!</h2>
+            <p class="text-5xl font-bold text-red-700 mb-6" id="final-score">
+                <!-- Final score text e.g., "4 / 5" -->
+            </p>
+            <p id="score-message" class="text-xl text-gray-600 mb-8">
+                <!-- A fun message based on the score -->
+            </p>
+            <button id="restart-btn" class="w-full bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-red-800 transition-all duration-200 text-lg">
+                Restart Quiz
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. QUIZ DATA ---
+        // All 20 questions from the JSON file
+        const allQuestions = [
+            { "questionNumber": 1, "questionType": "True/False", "questionText": "True/False: The attendance at the 'Pink Out' game against Northwestern was 8,615.", "answer": "False" },
+            { "questionNumber": 2, "questionType": "Multiple Choice", "questionText": "How many total blocks did Nebraska register against Northwestern?", "options": ["A) 1", "B) 5", "C) 10", "D) 21"], "answer": "C) 10" },
+            { "questionNumber": 3, "questionType": "True/False", "questionText": "True/False: In the first set against Northwestern, the Wildcats led 9-8 before Nebraska went on a 7-0 run.", "answer": "True" },
+            { "questionNumber": 4, "questionType": "Multiple Choice", "questionText": "Who led Nebraska in blocks during the Northwestern match?", "options": ["A) Rebekah Allick", "B) Andi Jackson", "C) Bergen Reilly", "D) Buse Hazan"], "answer": "B) Andi Jackson" },
+            { "questionNumber": 5, "questionType": "True/False", "questionText": "True/False: Northwestern's one block tied the season low for a Husker opponent.", "answer": "True" },
+            { "questionNumber": 6, "questionType": "Multiple Choice", "questionText": "According to senior blocker Rebekah Allick, what is her 'biggest fear moving forward'?", "options": ["A) Attack errors", "B) Complacency", "C) Losing to Michigan State", "D) The home crowd"], "answer": "B) Complacency" },
+            { "questionNumber": 7, "questionType": "True/False", "questionText": "True/False: Nebraska had 21 attack errors against Northwestern.", "answer": "False" },
+            { "questionNumber": 8, "questionType": "Multiple Choice", "questionText": "Nebraska's win over Purdue on Sunday, Oct. 12, was their ___ straight sweep.", "options": ["A) Fifth", "B) Sixth", "C) Seventh", "D) Eighth"], "answer": "C) Seventh" },
+            { "questionNumber": 9, "questionType": "True/False", "questionText": "True/False: Before the Purdue match, the last time Nebraska had lost a set was against Creighton on Sept. 16.", "answer": "True" },
+            { "questionNumber": 10, "questionType": "Multiple Choice", "questionText": "Who is the 23rd-year head coach of the Purdue Boilermakers?", "options": ["A) Dani Busboom Kelly", "B) Kenna Wollard", "C) Dave Shondell", "D) Julia Kane"], "answer": "C) Dave Shondell" },
+            { "questionNumber": 11, "questionType": "True/False", "questionText": "True/False: Nebraska head coach Dani Busboom Kelly successfully won a challenge during the first set against Purdue.", "answer": "False" },
+            { "questionNumber": 12, "questionType": "Multiple Choice", "questionText": "Which player recorded their 90th career ace during the second set against Purdue?", "options": ["A) Harper Murray", "B) Andi Jackson", "C) Olivia Mauch", "D) Taylor Landfair"], "answer": "A) Harper Murray" },
+            { "questionNumber": 13, "questionType": "Multiple Choice", "questionText": "What was the final score of the third set against Purdue?", "options": ["A) 25-13", "B) 25-15", "C) 25-16", "D) 25-23"], "answer": "B) 25-15" },
+            { "questionNumber": 14, "questionType": "True/False", "questionText": "True/False: After defeating Purdue, Nebraska's record improved to 16-0.", "answer": "True" },
+            { "questionNumber": 15, "questionType": "Multiple Choice", "questionText": "Nebraska's sweep against Washington on Friday, Oct. 10, extended their streak of consecutive set victories to:", "options": ["A) 15", "B) 16", "C) 19", "D) 20"], "answer": "C) 19" },
+            { "questionNumber": 16, "questionType": "True/False", "questionText": "True/False: Against Washington, freshman opposite hitter Virginia Adriano led the Huskers in kills for the entire match.", "answer": "False" },
+            { "questionNumber": 17, "questionType": "Multiple Choice", "questionText": "Which Husker tied her season-high with eight blocks against Washington?", "options": ["A) Andi Jackson", "B) Harper Murray", "C) Virginia Adriano", "D) Rebekah Allick"], "answer": "D) Rebekah Allick" },
+            { "questionNumber": 18, "questionType": "True/False", "questionText": "True/False: Coach Busboom Kelly described the Washington match as 'the absolute cleanest game' the team had played.", "answer": "False" },
+            { "questionNumber": 19, "questionType": "Multiple Choice", "questionText": "After defeating Washington, what was Nebraska's next scheduled match?", "options": ["A) No. 12 Purdue", "B) Michigan State", "C) Northwestern", "D) Creighton"], "answer": "A) No. 12 Purdue" },
+            { "questionNumber": 20, "questionType": "True/False", "questionText": "True/False: In the previous meeting against Michigan State in East Lansing, the set scores were 25-15, 25-18, and 25-20.", "answer": "True" }
+        ];
+
+        // --- 2. STATE VARIABLES ---
+        let selectedQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        // --- 3. DOM ELEMENT REFERENCES ---
+        const startCard = document.getElementById('start-card');
+        const quizCard = document.getElementById('quiz-card');
+        const scoreCard = document.getElementById('score-card');
+        
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const checkBtn = document.getElementById('check-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        const questionNumber = document.getElementById('question-number');
+        const scoreDisplay = document.getElementById('score-display');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackText = document.getElementById('feedback-text');
+        const finalScore = document.getElementById('final-score');
+        const scoreMessage = document.getElementById('score-message');
+
+        // --- 4. EVENT LISTENERS ---
+        startBtn.addEventListener('click', startQuiz);
+        restartBtn.addEventListener('click', startQuiz);
+        checkBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', nextQuestion);
+
+        // --- 5. FUNCTIONS ---
+
+        /**
+         * Starts or restarts the quiz.
+         * Resets state, shuffles questions, and shows the first question.
+         */
+        function startQuiz() {
+            // Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedAnswer = null;
+            scoreDisplay.textContent = '0';
+            
+            // Shuffle all questions and pick the first 5
+            selectedQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 5);
+            
+            // Show/hide cards
+            startCard.classList.add('hidden');
+            scoreCard.classList.add('hidden');
+            quizCard.classList.remove('hidden');
+            
+            displayQuestion();
+        }
+
+        /**
+         * Displays the current question and answer options.
+         */
+        function displayQuestion() {
+            // Reset UI
+            selectedAnswer = null;
+            optionsContainer.innerHTML = '';
+            feedbackText.textContent = '';
+            feedbackText.classList.remove('text-green-600', 'text-red-600');
+            checkBtn.classList.remove('hidden');
+            nextBtn.classList.add('hidden');
+            checkBtn.disabled = true;
+
+            // Get current question data
+            const question = selectedQuestions[currentQuestionIndex];
+            
+            // Populate UI
+            questionNumber.textContent = currentQuestionIndex + 1;
+            questionText.textContent = question.questionText;
+
+            // Create answer options
+            let options = [];
+            if (question.questionType === "True/False") {
+                options = ["True", "False"];
+            } else {
+                options = question.options;
+            }
+
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.classList.add('option-btn', 'w-full', 'text-left', 'p-4', 'rounded-lg', 'border-2', 'border-gray-300', 'transition-all', 'duration-150', 'hover:bg-gray-100');
+                button.dataset.answer = option;
+                button.addEventListener('click', selectAnswer);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        /**
+         * Handles the user clicking on an answer option.
+         */
+        function selectAnswer(e) {
+            // Remove 'selected' from previously selected button
+            const selectedBtn = document.querySelector('.option-btn.selected');
+            if (selectedBtn) {
+                selectedBtn.classList.remove('selected');
+            }
+
+            // Add 'selected' to the new button
+            const button = e.target;
+            button.classList.add('selected');
+            selectedAnswer = button.dataset.answer;
+            checkBtn.disabled = false;
+        }
+
+        /**
+         * Checks the selected answer against the correct answer.
+         */
+        function checkAnswer() {
+            checkBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+            
+            // Disable all option buttons
+            const optionButtons = document.querySelectorAll('.option-btn');
+            optionButtons.forEach(btn => {
+                btn.disabled = true;
+            });
+
+            const question = selectedQuestions[currentQuestionIndex];
+            const correctAnswer = question.answer;
+            
+            const selectedBtn = document.querySelector('.option-btn.selected');
+
+            // Check if the selected answer string contains the correct answer.
+            // This works for "C) 10" matching "C) 10" and "True" matching "True".
+            if (selectedAnswer.includes(correctAnswer)) {
+                score++;
+                scoreDisplay.textContent = score;
+                feedbackText.textContent = "Correct!";
+                feedbackText.classList.add('text-green-600');
+                selectedBtn.classList.add('correct');
+                selectedBtn.classList.remove('selected');
+            } else {
+                feedbackText.textContent = `Incorrect. The correct answer was: ${correctAnswer}`;
+                feedbackText.classList.add('text-red-600');
+                selectedBtn.classList.add('incorrect');
+                selectedBtn.classList.remove('selected');
+                
+                // Highlight the correct answer if it wasn't selected
+                optionButtons.forEach(btn => {
+                    if (btn.dataset.answer.includes(correctAnswer)) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            // Check if it's the last question
+            if (currentQuestionIndex === selectedQuestions.length - 1) {
+                nextBtn.textContent = 'Finish Quiz';
+            } else {
+                nextBtn.textContent = 'Next Question';
+            }
+        }
+
+        /**
+         * Moves to the next question or shows the final score.
+         */
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < selectedQuestions.length) {
+                displayQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        /**
+         * Hides the quiz and displays the final score card.
+         */
+        function showScore() {
+            quizCard.classList.add('hidden');
+            scoreCard.classList.remove('hidden');
+
+            finalScore.textContent = `${score} / ${selectedQuestions.length}`;
+
+            let message = '';
+            const percentage = score / selectedQuestions.length;
+            if (percentage === 1) {
+                message = "Perfect score! You're a true Husker expert!";
+            } else if (percentage >= 0.8) {
+                message = "Great job! You really know your stuff.";
+            } else if (percentage >= 0.5) {
+                message = "Not bad! You're keeping up with the news.";
+            } else {
+                message = "Better luck next time! Keep reading the DN.";
+            }
+            scoreMessage.textContent = message;
+        }
+
+    </script>
+</body>
+</html>
