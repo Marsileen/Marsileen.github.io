@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DN Target Practice</title>
+    <!-- Import Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Basic Setup --- */
+        body, html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #333;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #game-container {
+            width: 100%;
+            height: 100%;
+            max-width: 1000px; /* Max width for large screens */
+            margin: auto;
+            background: #87CEEB; /* Sky Blue */
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid #654321;
+            border-right: 5px solid #654321;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            /* Hide cursor over game, show custom one */
+            cursor: none; 
+        }
+
+        /* Re-show cursor on interactive UI */
+        #question-box, #score-box, #end-screen, #start-screen {
+            cursor: auto;
+        }
+
+        /* --- Scenery --- */
+        #shooting-gallery {
+            width: 100%;
+            height: 70%; /* Takes up top 70% */
+            position: relative;
+            background: linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 100%); /* Sky gradient */
+        }
+
+        #shooter-stall {
+            width: 100%;
+            height: 30%; /* Takes up bottom 30% */
+            background: #DEB887; /* Burly Wood */
+            border-top: 20px solid #D2691E; /* Chocolate */
+            box-shadow: 0 -10px 20px rgba(0,0,0,0.3) inset;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* --- Daily Nebraskan Sign --- */
+        #dn-sign {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            background: #DAA520; /* Gold */
+            color: #FFF;
+            font-family: 'Bangers', cursive;
+            padding: 10px 20px;
+            border: 6px solid #FFF;
+            border-radius: 10px;
+            font-size: 1.75rem;
+            text-shadow: 2px 2px 0 #E53E3E, -2px 2px 0 #E53E3E, 2px -2px 0 #E53E3E, -2px -2px 0 #E53E3E; /* Red outline */
+            transform: translateX(-50%) rotate(-5deg); /* Centered and rotated */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        /* --- Blaster --- */
+        #blaster {
+            position: absolute;
+            width: 60px;
+            height: 100px;
+            background-color: #E53E3E; /* Red */
+            border: 5px solid #C0392B; /* Darker Red */
+            border-radius: 30px 30px 10px 10px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 6;
+            transition: transform 0.1s ease; /* For recoil */
+        }
+        #blaster::before { /* Barrel */
+            content: '';
+            position: absolute;
+            top: -25px;
+            left: 15px;
+            width: 30px;
+            height: 30px;
+            background: #A93226;
+            border-radius: 5px;
+        }
+        .blaster-recoil {
+            transform: translateX(-50%) scale(0.95) !important;
+        }
+
+        /* --- Targets --- */
+        .target {
+            position: absolute;
+            width: 120px;
+            height: auto;
+            z-index: 3;
+            transition: transform 0.2s ease, filter 0.2s ease;
+            cursor: none; /* Inherit cursor hiding */
+            animation-play-state: paused; /* Start paused */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .target.moving {
+            animation-duration: 5s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-play-state: running;
+        }
+
+        /* Targets are pushed down to avoid question box */
+        @keyframes move1 {
+            from { left: 0%; transform: translateY(120px) scale(0.9); }
+            to { left: calc(100% - 120px); transform: translateY(140px) scale(0.95); }
+        }
+        @keyframes move2 {
+            from { left: 10%; transform: translateY(180px) scale(0.85); } /* Was 160 */
+            to { left: 80%; transform: translateY(170px) scale(0.9); } /* Was 150 */
+        }
+        @keyframes move3 {
+            from { left: 20%; transform: translateY(240px) scale(0.8); } /* Was 200 */
+            to { left: 70%; transform: translateY(220px) scale(0.85); } /* Was 180 */
+        }
+        @keyframes move4 {
+            from { left: 5%; transform: translateY(300px) scale(0.75); } /* Was 240 */
+            to { left: calc(100% - 125px); transform: translateY(280px) scale(0.8); } /* Was 220 */
+        }
+
+        .target-graphic {
+            width: 100px;
+            height: 100px;
+            background-color: #fff;
+            border: 5px solid #E53E3E; /* Red */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+        .target-graphic::before { /* Inner ring */
+            content: '';
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border: 5px solid #E53E3E;
+            border-radius: 50%;
+        }
+        .target-graphic::after { /* Bullseye */
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #E53E3E;
+            border-radius: 50%;
+        }
+        .target-text {
+            background: #FFF;
+            border: 3px solid #E53E3E;
+            border-radius: 8px;
+            padding: 5px 10px;
+            margin-top: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #333;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+            width: 140px; /* Wider for text */
+            text-align: center;
+        }
+
+        /* Target states */
+        .target.correct {
+            filter: drop-shadow(0 0 15px #4CAF50); /* Green glow */
+            transform: scale(1.1);
+        }
+        .target.incorrect {
+            filter: grayscale(80%) drop-shadow(0 0 10px #E53E3E); /* Red glow */
+            opacity: 0.7;
+        }
+        .target.faded {
+            opacity: 0.5;
+            filter: grayscale(50%);
+        }
+
+        /* Assign animations */
+        #target-1 { animation-name: move1; }
+        #target-2 { animation-name: move2; }
+        #target-3 { animation-name: move3; }
+        #target-4 { animation-name: move4; }
+
+        /* --- UI Elements --- */
+        #question-box {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 700px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 5px solid #D2691E;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        #question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #333;
+            margin: 0;
+        }
+
+        #timer-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+            border: 2px solid #ccc;
+        }
+        #timer-bar-inner {
+            width: 100%;
+            height: 100%;
+            background-color: #4CAF50; /* Green */
+            transition: width 0.1s linear, background-color 0.5s ease;
+        }
+
+        #score-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: #FFF;
+            text-shadow: 3px 3px 0 #E53E3E, -3px 3px 0 #E53E3E, 3px -3px 0 #E53E3E, -3px -3px 0 #E53E3E; /* Red outline */
+            z-index: 10;
+        }
+
+        /* --- Overlays (Start/End) --- */
+        #ui-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 99;
+            pointer-events: none; /* Allows clicks to go through */
+        }
+        
+        #end-screen {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            color: white;
+            text-align: center;
+            font-family: 'Bangers', cursive;
+            pointer-events: all; /* Can be clicked */
+            cursor: auto;
+        }
+        #end-screen h2 {
+            font-size: 5rem;
+            margin: 0;
+            text-shadow: 4px 4px 0 #E53E3E;
+        }
+        #final-score {
+            font-size: 2.5rem;
+            margin: 1rem 0;
+        }
+
+        /* --- NEW: Results Styling --- */
+        #results-container {
+            width: 90%;
+            max-width: 600px;
+            max-height: 45%; /* Allow scrolling */
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif; /* Use standard font */
+            text-align: left;
+        }
+        #results-container h3 {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            margin: 0 0 10px 0;
+            text-align: center;
+            color: #FBC02D;
+        }
+        #results-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        #results-list li {
+            background: #fff;
+            color: #333;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 8px solid #E53E3E; /* Default incorrect */
+        }
+        #results-list li.correct {
+            border-left-color: #4CAF50; /* Green for correct */
+        }
+        #results-list li strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            color: #000;
+        }
+        #results-list li .user-answer {
+            display: block;
+            font-size: 0.9rem;
+        }
+        #results-list li .correct-answer {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+        /* --- End Results Styling --- */
+
+
+        #play-again-btn {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            padding: 1rem 2.5rem;
+            background-color: #FBC02D; /* Yellow */
+            color: #FFF;
+            border: 5px solid #F9A825;
+            border-radius: 10px;
+            cursor: pointer;
+            text-shadow: 2px 2px 0 #C79100;
+            transition: all 0.2s ease;
+        }
+        #play-again-btn:hover {
+            transform: scale(1.05);
+            background-color: #FFEC8B;
+        }
+
+        /* --- Crosshair (NEW) --- */
+        #crosshair {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            top: -100px; /* Start off-screen */
+            left: -100px;
+            z-index: 101; /* On top of everything */
+            pointer-events: none; /* Clicks go through it */
+        }
+        #crosshair::before,
+        #crosshair::after {
+            content: '';
+            position: absolute;
+            background-color: rgba(255, 0, 0, 0.8); /* Red aim sight */
+            box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+        #crosshair::before { /* Vertical line */
+            width: 4px;
+            height: 30px;
+            left: 13px;
+            top: 0;
+        }
+        #crosshair::after { /* Horizontal line */
+            width: 30px;
+            height: 4px;
+            left: 0;
+            top: 13px;
+        }
+
+        /* --- Start Screen --- */
+        #start-screen {
+            display: flex; /* Starts visible */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 98; /* Just behind end-screen */
+            color: white;
+            text-align: center;
+            font-family: 'Bangers', cursive;
+            pointer-events: all;
+            cursor: auto;
+        }
+        #start-screen h2 {
+            font-size: 4rem;
+            text-shadow: 4px 4px 0 #E53E3E;
+        }
+        #start-screen p {
+            font-size: 1.5rem;
+            margin: 0.5rem 0 1rem 0;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            max-width: 400px;
+            line-height: 1.4;
+        }
+        #start-screen ul {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            list-style-type: '🎯'; /* Fun list bullet */
+            text-align: left;
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        #start-screen li {
+            padding-left: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        #start-game-btn {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            padding: 0.75rem 2rem;
+            margin-top: 1rem;
+            background-color: #4CAF50; /* Green */
+            color: #FFF;
+            border: 4px solid #388E3C;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #start-game-btn:hover {
+            transform: scale(1.05);
+            background-color: #66BB6A;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        
+        <div id="crosshair"></div>
+
+        <!-- 1. The Scenery -->
+        <div id="shooting-gallery">
+            <!-- Targets will be added here by JS -->
+            <div class="target" id="target-1"><div class="target-graphic"></div><div class="target-text">Answer 1</div></div>
+            <div class="target" id="target-2"><div class="target-graphic"></div><div class="target-text">Answer 2</div></div>
+            <div class="target" id="target-3"><div class="target-graphic"></div><div class="target-text">Answer 3</div></div>
+            <div class="target" id="target-4"><div class="target-graphic"></div><div class="target-text">Answer 4</div></div>
+        </div>
+        
+        <div id="shooter-stall">
+            <div id="blaster"></div>
+            <div id="dn-sign">The Daily Nebraskan</div>
+        </div>
+
+        <!-- 2. The UI -->
+        <div id="question-box">
+            <div id="question-text">Loading question...</div>
+            <div id="timer-bar"><div id="timer-bar-inner"></div></div>
+        </div>
+        
+        <div id="score-box">Score: 0</div>
+
+        <!-- 3. UI Overlay (for popups) -->
+        <div id="ui-overlay">
+            <!-- This is now just a container for the end screen -->
+        </div>
+
+        <!-- 4. Start Screen -->
+        <div id="start-screen">
+            <h2>Welcome to</h2>
+            <h2>DN Target Practice!</h2>
+            <p>Test your knowledge of Daily Nebraskan stories in this carnival game!</p>
+            <ul>
+                <li>You'll get 7 random questions.</li>
+                <li>Aim with your mouse and click the target with the right answer.</li>
+                <li>The faster you answer correctly, the more points you get!</li>
+            </ul>
+            <button id="start-game-btn">Start Game!</button>
+        </div>
+
+        <!-- 5. End Screen (Hidden) -->
+        <div id="end-screen" style="display: none;">
+            <h2>Game Over!</h2>
+            <div id="final-score">Your Final Score: 0</div>
+            
+            <!-- NEW: Results Box -->
+            <div id="results-container">
+                <h3>Your Results:</h3>
+                <ul id="results-list">
+                    <!-- JS will populate this -->
+                </ul>
+            </div>
+
+            <button id="play-again-btn">Play Again!</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Question Data (Moved inside) ---
+        // We put all the questions right here so we don't need to fetch a file!
+        const ALL_QUESTIONS = [
+            { "question": "What business did the UNL College of Journalism and Mass Communications alumni start?", "answers": ["A coffee shop", "A t-shirt printing business", "A marketing agency", "A bookstore"], "correct": "A coffee shop" },
+            { "question": "What is the name of the coffee shop started by UNL alumni?", "answers": ["The Daily Grind", "Husker Java", "The Mill", "Sips & Stories"], "correct": "Sips & Stories" },
+            { "question": "Where is the Sips & Stories coffee shop located?", "answers": ["Inside the UNL Student Union", "In the Haymarket", "Near Memorial Stadium", "In Andersen Hall"], "correct": "In Andersen Hall" },
+            { "question": "What unique feature does Sips & Stories offer, according to the article?", "answers": ["Live music every Friday", "A 24/7 study area", "A podcast recording booth", "A drive-thru window"], "correct": "A podcast recording booth" },
+            { "question": "What event was held to celebrate Nebraska's educators, as reported by the Daily Nebraskan?", "answers": ["A teacher's parade", "A scholarship banquet", "The 'Standing Ovation' event", "A state-wide talent show"], "correct": "The 'Standing Ovation' event" },
+            { "question": "Who was one of the educators highlighted for their impact at the 'Standing Ovation' event?", "answers": ["A Lincoln High math teacher", "A UNL history professor", "A second-grade teacher from Omaha", "A high school band director"], "correct": "A second-grade teacher from Omaha" },
+            { "question": "What was the main theme of the 'Standing Ovation' event?", "answers": ["School funding", "Recognizing unsung heroes", "Technology in classrooms", "Student athletic achievements"], "correct": "Recognizing unsung heroes" },
+            { "question": "Which UNL student initiative was featured for its community service?", "answers": ["Engineers Without Borders", "UNL Dance Marathon", "Husker Food Pantry", "Greeks Go Green"], "correct": "UNL Dance Marathon" },
+            { "question": "What is the primary goal of the UNL Dance Marathon?", "answers": ["To promote school spirit", "To raise money for a local children's hospital", "To win a national dance competition", "To provide free dance lessons"], "correct": "To raise money for a local children's hospital" },
+            { "question": "How much money did the UNL Dance Marathon raise in their recent event?", "answers": ["Over $50,000", "Over $100,000", "Over $500,000", "Over $1 million"], "correct": "Over $500,000" },
+            { "question": "What local band was profiled by the Daily Nebraskan for their 'nostalgic' sound?", "answers": ["The Prairie Schooners", "Red Star Revival", "Salt Creek", "The Haymarket Hooligans"], "correct": "Salt Creek" },
+            { "question": "What genre does the band Salt Creek primarily play?", "answers": ["Country", "Hip-hop", "Indie Rock/Emo", "Electronic Dance Music"], "correct": "Indie Rock/Emo" },
+            { "question": "What new campus building project was recently approved, according to a DN report?", "answers": ["A new football stadium", "A high-tech research library", "A performing arts center", "A new engineering complex"], "correct": "A new engineering complex" },
+            { "question": "What is the main purpose of the new engineering complex?", "answers": ["To house the computer science department", "To focus on advanced manufacturing and materials", "To build a new robotics lab", "To create a space for all first-year students"], "correct": "To focus on advanced manufacturing and materials" },
+            { "question": "Which UNL sports team was highlighted for a surprising winning streak?", "answers": ["Football", "Women's Volleyball", "Men's Basketball", "Baseball"], "correct": "Baseball" },
+            { "question": "What was a key factor in the baseball team's recent success?", "answers": ["A star pitcher's performance", "A new coaching strategy", "Strong hitting from first-year players", "A newly renovated stadium"], "correct": "Strong hitting from first-year players" },
+            { "question": "What local issue in Lincoln was the Daily Nebraskan reporting on?", "answers": ["The expansion of the bike trail system", "A debate over new downtown parking garages", "Affordable housing shortages for students", "The opening of a new farmer's market"], "correct": "Affordable housing shortages for students" },
+            { "question": "What did the report on affordable housing find?", "answers": ["That UNL has too many dorms", "That rental prices have increased significantly", "That students prefer luxury apartments", "That new construction has solved the problem"], "correct": "That rental prices have increased significantly" },
+            { "question": "What is the name of the art exhibit featured in the Daily Nebraskan?", "answers": ["'Nebraska Now'", "'Prairie Modern'", "'Flatwater Futures'", "'Cornhusker Contemporary'"], "correct": "'Flatwater Futures'" },
+            { "question": "What is the theme of the 'Flatwater Futures' art exhibit?", "answers": ["The history of Nebraska", "The future of art and technology", "UNL student life", "Portraits of famous Nebraskans"], "correct": "The future of art and technology" }
+        ];
+
+        // --- Constants ---
+        const GAME_LENGTH = 7; // Play 7 questions
+        const QUESTION_TIME = 10000; // 10 seconds in milliseconds
+        const NEXT_QUESTION_DELAY = 1500; // 1.5 seconds
+
+        // --- DOM Elements ---
+        const gameContainer = document.getElementById('game-container');
+        const questionText = document.getElementById('question-text');
+        const targets = [
+            document.getElementById('target-1'),
+            document.getElementById('target-2'),
+            document.getElementById('target-3'),
+            document.getElementById('target-4')
+        ];
+        const scoreBox = document.getElementById('score-box');
+        const endScreen = document.getElementById('end-screen');
+        const finalScoreEl = document.getElementById('final-score');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const timerBarInner = document.getElementById('timer-bar-inner');
+        const blaster = document.getElementById('blaster');
+        const shootingGallery = document.getElementById('shooting-gallery');
+        const shooterStall = document.getElementById('shooter-stall');
+        const startScreen = document.getElementById('start-screen');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const crosshair = document.getElementById('crosshair');
+        const resultsList = document.getElementById('results-list'); // NEW
+
+        // --- Game State ---
+        let gameQuestions = [];
+        let currentShuffledAnswers = []; // NEW
+        let gameResults = []; // NEW
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let gameInProgress = false;
+        let timerId = null;
+        let intervalId = null;
+        let timeRemaining = QUESTION_TIME;
+
+        // --- Utility Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- Blaster Movement ---
+        function moveShooter(e) {
+            const gameRect = gameContainer.getBoundingClientRect();
+            
+            // --- 1. Move Crosshair ---
+            // Calculate mouse X and Y relative to the game container
+            let mouseX = e.clientX - gameRect.left;
+            let mouseY = e.clientY - gameRect.top;
+
+            // Update crosshair position (center it on the cursor)
+            crosshair.style.left = `${mouseX - crosshair.offsetWidth / 2}px`;
+            crosshair.style.top = `${mouseY - crosshair.offsetHeight / 2}px`;
+
+            // --- 2. Move Blaster (using the same mouseX) ---
+            const stallRect = shooterStall.getBoundingClientRect();
+            // The blaster's X position is the mouseX, but constrained to the stall
+            let blasterX = mouseX;
+            
+            // Constrain the blaster to be within the stall boundaries
+            const blasterWidth = blaster.offsetWidth;
+            blasterX = Math.max(blasterWidth / 2, blasterX); // Left edge
+            blasterX = Math.min(stallRect.width - blasterWidth / 2, blasterX); // Right edge
+            
+            // Set the blaster's 'left' style, adjusting for its own width
+            blaster.style.left = `${blasterX - (blasterWidth / 2)}px`;
+        }
+
+        // --- Game Logic ---
+        function initGame() {
+            // Show the start screen
+            startScreen.style.display = 'flex';
+            endScreen.style.display = 'none';
+
+            // Reset score display
+            scoreBox.textContent = `Score: 0`;
+
+            // Make sure targets are paused
+            setTargetMovement(false);
+            targets.forEach(target => target.classList.remove('moving')); // Ensure 'moving' is off
+
+            // Add target click listeners
+            targets.forEach((target, index) => {
+                target.addEventListener('click', () => handleTargetClick(index));
+            });
+            
+            // Add mouse move listener
+            gameContainer.addEventListener('mousemove', moveShooter); // NEW
+            
+            // Set up "Play Again"
+            playAgainBtn.addEventListener('click', startGame);
+
+            // Set up "Start Game"
+            startGameBtn.addEventListener('click', startGame);
+        }
+
+        function startGame() {
+            // 1. Hide start/end screens
+            startScreen.style.display = 'none';
+            endScreen.style.display = 'none';
+
+            // 2. Shuffle all questions and pick the first 7
+            gameQuestions = shuffleArray([...ALL_QUESTIONS]).slice(0, GAME_LENGTH);
+            
+            // 3. Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+            gameInProgress = true;
+            gameResults = []; // NEW: Reset results
+            
+            // 4. Reset UI
+            scoreBox.textContent = `Score: 0`;
+            resetTargets();
+            targets.forEach(target => target.classList.add('moving')); // Add 'moving' class for the game
+            setTargetMovement(true); // Start targets moving
+
+            // 5. Load first question
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= gameQuestions.length) {
+                endGame();
+                return;
+            }
+
+            // 1. Get current question data
+            const currentQuestion = gameQuestions[currentQuestionIndex];
+            
+            // 2. Shuffle answers so the correct one isn't always in the same spot
+            currentShuffledAnswers = shuffleArray([...currentQuestion.answers]); // Use game state var
+            
+            // 3. Find the new index of the correct answer
+            const correctIndex = currentShuffledAnswers.findIndex(answer => answer === currentQuestion.correct);
+            
+            // 4. Reset UI and state for new question
+            resetTargets();
+            gameInProgress = true;
+            
+            // 5. Populate question and targets
+            questionText.textContent = currentQuestion.question;
+            targets.forEach((target, index) => {
+                target.querySelector('.target-text').textContent = currentShuffledAnswers[index];
+                // Store the correct answer index on the target element itself
+                target.dataset.correct = (index === correctIndex);
+            });
+
+            // 6. Start the timer
+            startTimer();
+        }
+
+        function startTimer() {
+            // Reset timer bar
+            timeRemaining = QUESTION_TIME;
+            timerBarInner.style.width = '100%';
+            timerBarInner.style.backgroundColor = '#4CAF50';
+            
+            // Clear any old timers
+            if (timerId) clearTimeout(timerId);
+            if (intervalId) clearInterval(intervalId);
+
+            const startTime = Date.now();
+
+            // Interval to update the timer bar UI
+            intervalId = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                timeRemaining = QUESTION_TIME - elapsed;
+                let percent = (timeRemaining / QUESTION_TIME) * 100;
+                timerBarInner.style.width = `${percent}%`;
+
+                if (percent < 50) timerBarInner.style.backgroundColor = '#FBC02D'; // Yellow
+                if (percent < 25) timerBarInner.style.backgroundColor = '#E53E3E'; // Red
+
+                if (timeRemaining <= 0) {
+                    handleAnswer(false, -1); // Time's up (use -1)
+                }
+            }, 50); // Update 20 times a second
+
+            // Timeout for when time officially runs out
+            timerId = setTimeout(() => {
+                handleAnswer(false, -1); // Time's up (use -1)
+            }, QUESTION_TIME);
+        }
+
+        function stopTimer() {
+            clearTimeout(timerId);
+            clearInterval(intervalId);
+            timerId = null;
+            intervalId = null;
+        }
+
+        function handleTargetClick(index) {
+            if (!gameInProgress) return;
+
+            // 1. Stop timer and game
+            stopTimer();
+            gameInProgress = false;
+
+            // 2. Play blaster animation
+            blaster.classList.add('blaster-recoil');
+            setTimeout(() => blaster.classList.remove('blaster-recoil'), 200);
+
+            // 3. Check if the clicked target was correct
+            const clickedTarget = targets[index];
+            const isCorrect = clickedTarget.dataset.correct === 'true';
+            
+            // 4. Calculate score
+            let points = 0;
+            if (isCorrect) {
+                // Base score + time bonus
+                points = 20 + Math.floor((timeRemaining / QUESTION_TIME) * 80);
+                score += points;
+            }
+            
+            // 5. Show results
+            handleAnswer(isCorrect, index);
+        }
+
+        function handleAnswer(isCorrect, clickedIndex) {
+            if (gameInProgress) { // If timer ran out, this will be false
+                stopTimer();
+                gameInProgress = false;
+            }
+
+            // NEW: Record the result
+            const currentQuestion = gameQuestions[currentQuestionIndex];
+            const selectedAnswer = (clickedIndex > -1) ? currentShuffledAnswers[clickedIndex] : "Time's Up";
+            
+            gameResults.push({
+                question: currentQuestion.question,
+                selected: selectedAnswer,
+                correct: currentQuestion.correct,
+                isCorrect: isCorrect
+            });
+
+
+            // 1. Stop targets from moving
+            setTargetMovement(false);
+
+            // 2. Find correct target
+            const correctIndex = targets.findIndex(target => target.dataset.correct === 'true');
+
+            // 3. Style targets based on answer
+            targets.forEach((target, index) => {
+                if (index === correctIndex) {
+                    target.classList.add('correct');
+                } else if (index === clickedIndex && !isCorrect) {
+                    target.classList.add('incorrect');
+                } else {
+                    target.classList.add('faded');
+                }
+            });
+            
+            // 4. Update score display
+            scoreBox.textContent = `Score: ${score}`;
+
+            // 5. Move to next question after a delay
+            setTimeout(() => {
+                currentQuestionIndex++;
+                setTargetMovement(true); // Start targets moving again
+                loadQuestion();
+            }, NEXT_QUESTION_DELAY);
+        }
+
+        function resetTargets() {
+            targets.forEach(target => {
+                target.classList.remove('correct', 'incorrect', 'faded');
+                target.querySelector('.target-text').textContent = '...';
+                target.dataset.correct = 'false';
+            });
+        }
+
+        function setTargetMovement(shouldMove) {
+            const playState = shouldMove ? 'running' : 'paused';
+            targets.forEach(target => {
+                // target.classList.toggle('moving', shouldMove); // <-- REMOVED THIS
+                target.style.animationPlayState = playState;
+            });
+        }
+
+        function endGame() {
+            gameInProgress = false;
+            setTargetMovement(false);
+            targets.forEach(target => target.classList.remove('moving')); // Clean up 'moving' class
+            
+            // NEW: Populate Results List
+            resultsList.innerHTML = ''; // Clear old results
+            gameResults.forEach(result => {
+                const li = document.createElement('li');
+                li.classList.toggle('correct', result.isCorrect);
+                
+                let answerHtml = '';
+                if (result.isCorrect) {
+                    answerHtml = `<span class="user-answer">Your answer: <strong>${result.selected}</strong></span>`;
+                } else {
+                    answerHtml = `
+                        <span class="user-answer">Your answer: ${result.selected}</span>
+                        <span class="correct-answer">Correct answer: ${result.correct}</span>
+                    `;
+                }
+
+                li.innerHTML = `
+                    <strong>${result.question}</strong>
+                    ${answerHtml}
+                `;
+                resultsList.appendChild(li);
+            });
+
+
+            // Show end screen
+            finalScoreEl.textContent = `Your Final Score: ${score}`;
+            endScreen.style.display = 'flex';
+        }
+
+        // --- Start the application ---
+        document.addEventListener('DOMContentLoaded', initGame);
+
+    </script>
+</body>
+</html>
+
+
+
+
