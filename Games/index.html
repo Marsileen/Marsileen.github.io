@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Daily Nebraskan - News Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Bangers&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --carnival-red: #D90429;
+            --carnival-blue: #0077B6;
+            --carnival-yellow: #FACC15;
+            --carnival-bg: #FFF8E7;
+            --carnival-dark: #2B2D42;
+            --carnival-wood: #8D5B4C;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--carnival-bg);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: crosshair; /* Custom cursor for the game */
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 1000px; /* Max width for the game area */
+            max-height: 800px;
+            background-color: var(--carnival-dark);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 10px var(--carnival-wood);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Awning --- */
+        #awning {
+            width: 100%;
+            height: 80px;
+            flex-shrink: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--carnival-red),
+                var(--carnival-red) 30px,
+                #fff 30px,
+                #fff 60px
+            );
+            border-bottom: 10px solid var(--carnival-wood);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- Game Header (Inside Game Screen) --- */
+        #game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background-color: var(--carnival-blue);
+            color: white;
+            flex-shrink: 0;
+            border-bottom: 6px solid var(--carnival-wood);
+            position: relative;
+            z-index: 5;
+        }
+
+        #game-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 0px var(--carnival-dark);
+        }
+
+        #score-display {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background-color: var(--carnival-red);
+            padding: 5px 15px;
+            border-radius: 8px;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+        }
+
+        /* --- Question Bar --- */
+        #question-container {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            text-align: center;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 5;
+        }
+
+        #question-text {
+            font-size: 1.25rem; /* Reduced size to fit */
+            font-weight: 700;
+            margin-bottom: 10px;
+            min-height: 40px; /* Give it space */
+        }
+        
+        #timer-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: #555;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background-color: var(--carnival-yellow);
+            transition: width 0.1s linear;
+        }
+
+
+        /* --- Shooting Gallery --- */
+        #shooting-gallery {
+            flex-grow: 1;
+            position: relative;
+            background: linear-gradient(to bottom, #4a4e69, #2b2d42); /* Dark curtain bg */
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        /* --- Targets --- */
+        .target {
+            position: absolute;
+            width: 150px; /* Width for text */
+            height: 120px;
+            background-color: var(--carnival-yellow);
+            border: 5px solid var(--carnival-red);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            cursor: crosshair;
+            user-select: none;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        
+        .target-answer {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #000;
+            text-align: center;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        /* Target Rows and Animations */
+        .target-row {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 130px; /* Height of one target + buffer */
+            will-change: transform; /* Performance */
+        }
+
+        #row-1 {
+            top: 40px;
+            animation: moveRowLeft 18s linear infinite;
+        }
+
+        #row-2 {
+            top: 200px;
+            animation: moveRowRight 22s linear infinite;
+        }
+
+        /* Place targets inside rows */
+        .target-row .target {
+            position: absolute;
+            top: 0;
+        }
+
+        @keyframes moveRowLeft {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes moveRowRight {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Target States */
+        .target.correct {
+            background-color: #22c55e; /* Green */
+            border-color: #fff;
+            transform: scale(1.1);
+        }
+        .target.correct .target-answer {
+            color: #fff;
+        }
+        
+        .target.incorrect {
+            background-color: #9ca3af; /* Gray */
+            opacity: 0.7;
+        }
+
+        .target.hit {
+            /* Stop moving - we pause the parent animation */
+        }
+
+
+        /* --- Wooden Counter --- */
+        #counter {
+            width: 100%;
+            height: 60px;
+            background-color: var(--carnival-wood);
+            border-top: 10px solid #6F4538;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* --- Pop-up Modals (Start/End) --- */
+        .modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .modal-content {
+            background-color: var(--carnival-bg);
+            padding: 30px 40px;
+            border-radius: 12px;
+            border: 10px solid var(--carnival-wood);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            max-width: 500px;
+        }
+
+        .modal-title {
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            color: var(--carnival-red);
+            text-shadow: 2px 2px 0 #fff, 4px 4px 0 var(--carnival-dark);
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .modal-text {
+            font-size: 1.1rem;
+            color: var(--carnival-dark);
+            margin-bottom: 25px;
+        }
+        
+        .modal-text h2 {
+            font-family: 'Bangers', cursive;
+            color: var(--carnival-blue);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .modal-text ul {
+            list-style: none;
+            padding-left: 0;
+            text-align: left;
+        }
+        
+        .modal-text li {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .modal-text li::before {
+            content: '⭐';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .start-button {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            padding: 10px 30px;
+            background-color: var(--carnival-red);
+            color: white;
+            border: 4px solid #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            text-shadow: 2px 2px 0 var(--carnival-dark);
+            box-shadow: 0 5px 0 #8B0017;
+            transition: all 0.1s ease;
+        }
+
+        .start-button:hover {
+            background-color: #E60026;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #8B0017;
+        }
+
+        .start-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #8B0017;
+        }
+
+        #end-score {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--carnival-dark);
+            margin-bottom: 20px;
+        }
+
+        #end-score span {
+            font-size: 2.5rem;
+            color: var(--carnival-red);
+        }
+
+        /* --- Hide elements --- */
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        
+        <!-- Carnival Awning -->
+        <div id="awning"></div>
+
+        <!-- Game Header -->
+        <div id="game-header">
+            <div id="game-title">The Daily Nebraskan</div>
+            <div id="score-display">Score: 0</div>
+        </div>
+
+        <!-- Question -->
+        <div id="question-container">
+            <div id="question-text">Loading question...</div>
+            <div id="timer-bar-container">
+                <div id="timer-bar"></div>
+            </div>
+        </div>
+
+        <!-- Gallery -->
+        <div id="shooting-gallery">
+            <div id="row-1" class="target-row">
+                <!-- Targets will be spawned here -->
+            </div>
+            <div id="row-2" class="target-row">
+                <!-- Targets will be spawned here -->
+            </div>
+        </div>
+
+        <!-- Counter -->
+        <div id="counter"></div>
+
+        <!-- Start Screen Modal -->
+        <div id="start-screen" class="modal">
+            <div class="modal-content">
+                <h1 class="modal-title">Carnival News Quiz!</h1>
+                <div class="modal-text">
+                    <h2>How to Play:</h2>
+                    <ul>
+                        <li>The game is 7 rounds.</li>
+                        <li>Read the question at the top of the screen.</li>
+                        <li>Answers are on the moving targets. Aim with your cursor.</li>
+                        <li><strong>Click</strong> to shoot the target with the correct answer.</li>
+                        <li>You have 10 seconds! The faster you answer, the more points you get.</li>
+                    </ul>
+                </div>
+                <button id="start-button" class="start-button">Start Game!</button>
+            </div>
+        </div>
+
+        <!-- End Screen Modal -->
+        <div id="end-screen" class="modal hidden">
+            <div class="modal-content">
+                <h1 class="modal-title">Game Over!</h1>
+                <div id="end-score" class="modal-text">
+                    Your Final Score: <span>0</span>
+                </div>
+                <button id="restart-button" class="start-button">Play Again?</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Game Data ---
+        const gameData = {
+          "quizTitle": "The Daily Nebraskan's Carnival Quiz",
+          "questions": [
+            {
+              "story": "Lethal Injection",
+              "question": "Who spoke to University of Nebraska-Lincoln students about lethal injection?",
+              "options": [
+                "Corinna Lain",
+                "Eric Berger",
+                "Dr. Jay Chapman",
+                "Delaney Woltman",
+                "Rodney Bennett"
+              ],
+              "correctAnswer": "Corinna Lain"
+            },
+            {
+              "story": "Lethal Injection",
+              "question": "What did Corinna Lain discover about her initial beliefs regarding lethal injection?",
+              "options": [
+                "Not a single one of them was true",
+                "They were mostly accurate",
+                "They were only slightly exaggerated",
+                "They were confirmed by her research",
+                "They were written by Eric Berger"
+              ],
+              "correctAnswer": "Not a single one of them was true"
+            },
+            {
+              "story": "Lethal Injection",
+              "question": "Who created the original three-drug protocol for lethal injection?",
+              "options": [
+                "Dr. Jay Chapman, who admitted to not doing any research",
+                "Corinna Lain, after years of research",
+                "Eric Berger, after raising questions",
+                "A team of scientists in Nebraska",
+                "Delaney Woltman"
+              ],
+              "correctAnswer": "Dr. Jay Chapman, who admitted to not doing any research"
+            },
+            {
+              "story": "Lethal Injection",
+              "question": "According to Lain, who actually administers lethal injection drugs?",
+              "options": [
+                "Non-medical corrections officers",
+                "Certified doctors",
+                "The creators of the drug",
+                "Medical examiners",
+                "Lizzie Aurit"
+              ],
+              "correctAnswer": "Non-medical corrections officers"
+            },
+            {
+              "story": "UNL Budget Cuts",
+              "question": "What is Chancellor Rodney Bennett proposing at UNL and why?",
+              "options": [
+                "To cut six programs to address a $27.5 million budget deficit",
+                "To cut administrative staff to address a $75 million deficit",
+                "To add six new programs to increase revenue",
+                "To cut the meteorology program to align with AAU values",
+                "To add a new lethal injection program"
+              ],
+              "correctAnswer": "To cut six programs to address a $27.5 million budget deficit"
+            },
+            {
+              "story": "UNL Budget Cuts",
+              "question": "Who is Lizzie Aurit?",
+              "options": [
+                "A freshman in the meteorology-climatology program",
+                "A professor in the meteorology program",
+                "The creator of the university's metrics",
+                "A reporter for the Daily Nebraskan",
+                "The author of 'Secrets of the Killing State'"
+              ],
+              "correctAnswer": "A freshman in the meteorology-climatology program"
+            },
+            {
+              "story": "UNL Budget Cuts",
+              "question": "How did the university identify which programs to cut?",
+              "options": [
+                "Using a set of 18 metrics that ranked programs",
+                "Based on student votes",
+                "Based on alignment with the NU strategic plan only",
+                "By cutting the newest programs first",
+                "By interviewing all students"
+              ],
+              "correctAnswer": "Using a set of 18 metrics that ranked programs"
+            },
+            {
+              "story": "UNL Budget Cuts",
+              "question": "What are some of the teaching and research metrics used for evaluation?",
+              "options": [
+                "Degrees awarded, student retention rates, and federal research expenditures",
+                "Student popularity and faculty salaries",
+                "The number of stormwatching students",
+                "Only book publications and awards",
+                "Faculty opinions and suggestions"
+              ],
+              "correctAnswer": "Degrees awarded, student retention rates, and federal research expenditures"
+            },
+            {
+              "story": "Human Remains Investigation",
+              "question": "What was found at the Scotts Bluff National Monument on October 10?",
+              "options": [
+                "Human skeletal remains and items",
+                "A missing person's vehicle",
+                "Only bones confirmed to be animal",
+                "A reward poster for Chance Englebert",
+                "A missing hockey stick"
+              ],
+              "correctAnswer": "Human skeletal remains and items"
+            },
+            {
+              "story": "Human Remains Investigation",
+              "question": "Who is the missing person potentially connected to this discovery?",
+              "options": [
+                "Chance Englebert",
+                "Dawn Hume Englebert",
+                "A hiker from Wyoming",
+                "An unnamed person from Gering",
+                "Matt Rhule"
+              ],
+              "correctAnswer": "Chance Englebert"
+            },
+            {
+              "story": "Human Remains Investigation",
+              "question": "What did Chance Englebert's family confirm?",
+              "options": [
+                "The items found with the remains belonged to Chance",
+                "The remains were positively identified as Chance",
+                "They were contacted by the Daily Nebraskan",
+                "The reward for his discovery was $10,000",
+                "The remains were not human"
+              ],
+              "correctAnswer": "The items found with the remains belonged to Chance"
+            },
+            {
+              "story": "Human Remains Investigation",
+              "question": "Who is assisting with the forensic examination of the remains?",
+              "options": [
+                "The Douglas County Coroner’s Office and UNO professionals",
+                "The Gering Police Department only",
+                "The National Park Service and cadaver dogs from Wyoming",
+                "Chance Englebert's family",
+                "The UNL hockey team"
+              ],
+              "correctAnswer": "The Douglas County Coroner’s Office and UNO professionals"
+            },
+            {
+              "story": "Nebraska Hockey",
+              "question": "Who is the Nebraska Division II hockey club preparing to play?",
+              "options": [
+                "South Dakota State",
+                "Illinois State",
+                "Augustana",
+                "Minnesota-Crookston",
+                "No. 23 USC"
+              ],
+              "correctAnswer": "South Dakota State"
+            },
+            {
+              "story": "Nebraska Hockey",
+              "question": "What is the Nebraska hockey team's current record?",
+              "options": [
+                "10-2-0",
+                "4-1-0",
+                "2-1-0",
+                "5-3-0",
+                "3-10"
+              ],
+              "correctAnswer": "10-2-0"
+            },
+            {
+              "story": "Nebraska Hockey",
+              "question": "Who are the members of Nebraska’s lethal top offensive line?",
+              "options": [
+                "Jackson Beach, Jake Stadler, and Joey Lucius",
+                "Laken Decker and Hunter Brickle",
+                "Jacob Morgan and Jaden Salado",
+                "Dawson Worth and Owen Schneider",
+                "Dylan Raiola and Malcolm Hartzog Jr."
+              ],
+              "correctAnswer": "Jackson Beach, Jake Stadler, and Joey Lucius"
+            },
+            {
+              "story": "Nebraska Hockey",
+              "question": "Who is the standout goaltender for South Dakota State?",
+              "options": [
+                "Addison Ronning",
+                "Issac Rounds",
+                "Lincoln Mellenthin",
+                "Jacob Morgan",
+                "Jake Stadler"
+              ],
+              "correctAnswer": "Addison Ronning"
+            },
+            {
+              "story": "Nebraska Football",
+              "question": "What was Coach Matt Rhule’s record in one-score games during his first two seasons at Nebraska?",
+              "options": [
+                "3-10",
+                "3-1",
+                "0-4",
+                "10-3",
+                "10-2-0"
+              ],
+              "correctAnswer": "3-10"
+            },
+            {
+              "story": "Nebraska Football",
+              "question": "What is Coach Rhule’s record in one-score games this season?",
+              "options": [
+                "3-1",
+                "3-10",
+                "0-4",
+                "10-3",
+                "4-1-0"
+              ],
+              "correctAnswer": "3-1"
+            },
+            {
+              "story": "Nebraska Football",
+              "question": "How did Nebraska win its week one game against Cincinnati?",
+              "options": [
+                "An interception by Malcolm Hartzog Jr. in the final two minutes",
+                "A strategic play from quarterback Dylan Raiola",
+                "They lost to No. 21 Michigan",
+                "An aggressive defensive stop on the one-yard line",
+                "A last-minute field goal"
+              ],
+              "correctAnswer": "An interception by Malcolm Hartzog Jr. in the final two minutes"
+            },
+            {
+              "story": "Nebraska Football",
+              "question": "Who is Nebraska football's next opponent mentioned in the story?",
+              "options": [
+                "No. 23 USC",
+                "Cincinnati",
+                "Maryland",
+                "Northwestern",
+                "South Dakota State"
+              ],
+              "correctAnswer": "No. 23 USC"
+            }
+          ]
+        };
+
+        // --- Game State ---
+        let score = 0;
+        let currentQuestionIndex = 0;
+        let questions = [];
+        let timerInterval;
+        let timeLeft = 10;
+        const TIME_LIMIT = 10; // 10 seconds per question
+        const GAME_ROUNDS = 7;
+        let questionActive = false;
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const endScreen = document.getElementById('end-screen');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+        const scoreDisplay = document.getElementById('score-display');
+        const questionText = document.getElementById('question-text');
+        const timerBar = document.getElementById('timer-bar');
+        const row1 = document.getElementById('row-1');
+        const row2 = document.getElementById('row-2');
+        const finalScoreDisplay = document.getElementById('end-score').querySelector('span');
+        const allRows = [row1, row2];
+
+        // --- Game Logic ---
+
+        /**
+         * Shuffles an array in place
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        /**
+         * Starts the game
+         */
+        function startGame() {
+            startScreen.classList.add('hidden');
+            endScreen.classList.add('hidden');
+            
+            // Get 7 random questions
+            questions = shuffleArray([...gameData.questions]).slice(0, GAME_ROUNDS);
+            
+            score = 0;
+            currentQuestionIndex = 0;
+            scoreDisplay.textContent = `Score: 0`;
+            
+            loadQuestion();
+        }
+
+        /**
+         * Loads the next question
+         */
+        function loadQuestion() {
+            // Clear previous targets
+            row1.innerHTML = '';
+            row2.innerHTML = '';
+            // Reset timer bar
+            timerBar.style.width = '100%';
+            timerBar.style.backgroundColor = 'var(--carnival-yellow)';
+            
+            // Pause row animations while loading
+            allRows.forEach(row => row.style.animationPlayState = 'paused');
+
+            if (currentQuestionIndex >= questions.length) {
+                endGame();
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            questionText.textContent = question.question;
+            
+            const shuffledOptions = shuffleArray([...question.options]);
+            
+            // Distribute targets: 3 in row 1, 2 in row 2
+            const row1Targets = shuffledOptions.slice(0, 3);
+            const row2Targets = shuffledOptions.slice(3, 5);
+            const row1Positions = ['10%', '40%', '70%'];
+            const row2Positions = ['25%', '60%'];
+
+            createTargets(row1Targets, row1, row1Positions);
+            createTargets(row2Targets, row2, row2Positions);
+            
+            // Start timer and animations
+            timeLeft = TIME_LIMIT;
+            questionActive = true;
+            
+            // Short delay to allow elements to render before animating
+            setTimeout(() => {
+                allRows.forEach(row => row.style.animationPlayState = 'running');
+                startTimer();
+            }, 100);
+        }
+        
+        /**
+         * Helper to create targets for a row
+         */
+         function createTargets(options, rowElement, positions) {
+            options.forEach((option, index) => {
+                const target = document.createElement('div');
+                target.classList.add('target');
+                
+                const text = document.createElement('div');
+                text.classList.add('target-answer');
+                text.textContent = option;
+                
+                target.appendChild(text);
+                
+                // Store the answer text directly on the element
+                target.dataset.answer = option; 
+                target.style.left = positions[index];
+                
+                target.addEventListener('click', handleTargetClick);
+                rowElement.appendChild(target);
+            });
+         }
+
+        /**
+         * Starts the question timer
+         */
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                const timerWidth = (timeLeft / TIME_LIMIT) * 100;
+                timerBar.style.width = `${timerWidth}%`;
+                
+                if (timerWidth < 50) timerBar.style.backgroundColor = 'var(--carnival-red)';
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTargetClick(null, true); // Time's up
+                }
+            }, 100);
+        }
+
+        /**
+         * Handles the player clicking on a target
+         */
+        function handleTargetClick(e, isTimeUp = false) {
+            if (!questionActive) return; // Prevent multiple clicks
+            questionActive = false;
+            
+            // Stop the timer
+            if (timerInterval) clearInterval(timerInterval); 
+            
+            // Pause row animations
+            allRows.forEach(row => row.style.animationPlayState = 'paused');
+
+            const correctAnswer = questions[currentQuestionIndex].correctAnswer;
+            const allTargets = document.querySelectorAll('.target');
+            
+            let clickedTarget = null;
+            if (e) clickedTarget = e.currentTarget;
+
+            allTargets.forEach(target => {
+                target.classList.add('hit'); // Mark as hit
+                
+                if (target.dataset.answer === correctAnswer) {
+                    target.classList.add('correct');
+                } else {
+                    target.classList.add('incorrect');
+                }
+                
+                // Remove event listeners to prevent more clicks
+                target.removeEventListener('click', handleTargetClick);
+            });
+            
+            if (isTimeUp) {
+                // Time ran out, no points
+                questionText.textContent = "Time's up! No points this round.";
+            } else if (clickedTarget && clickedTarget.dataset.answer === correctAnswer) {
+                // Correct answer
+                // Calculate score based on time left (max 100)
+                const points = Math.floor((timeLeft / TIME_LIMIT) * 90) + 10; // Base 10 + up to 90
+                score += points;
+                scoreDisplay.textContent = `Score: ${score}`;
+                questionText.textContent = `Correct! +${points} points!`;
+            } else {
+                // Incorrect answer
+                questionText.textContent = "Whoops! That wasn't it.";
+            }
+
+            // Move to the next question after a delay
+            currentQuestionIndex++;
+            setTimeout(loadQuestion, 2500); // 2.5 second delay
+        }
+
+        /**
+         * Ends the game and shows the final score
+         */
+        function endGame() {
+            finalScoreDisplay.textContent = score;
+            endScreen.classList.remove('hidden');
+        }
+
+        // --- Event Listeners ---
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+
+    </script>
+</body>
+</html>
+
