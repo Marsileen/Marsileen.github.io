@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DN Target Practice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f0f0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #game-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- Carnival Scenery --- */
+        #shooting-gallery {
+            width: 100%;
+            height: 65%; /* Taller gallery */
+            background: linear-gradient(to bottom, #87CEEB 0%, #B2EBF2 80%); /* Sky */
+            position: relative;
+            overflow: hidden;
+            border-bottom: 8px solid #8B4513; /* Wooden rail */
+            cursor: none; /* Hide cursor for aiming */
+        }
+        
+        #shooter-stall {
+            width: 100%;
+            height: 35%; /* Shorter stall */
+            background: repeating-linear-gradient(
+                45deg,
+                #E53E3E,
+                #E53E3E 20px,
+                #FFF 20px,
+                #FFF 40px
+            ); /* Red/White stripes */
+            border-top: 20px solid #D2B48C; /* Tan counter */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* justify-content: flex-end; */ /* Removed */
+            padding: 1.5rem;
+            box-shadow: 0 -10px 20px rgba(0,0,0,0.2) inset;
+            cursor: none; /* Hide cursor for aiming */
+        }
+
+        #blaster {
+            width: 60px;
+            height: 50px;
+            background-color: #E53E3E;
+            border: 4px solid #c03030;
+            border-radius: 10px 10px 0 0;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: transform 0.05s linear;
+            z-index: 20;
+        }
+        #blaster::before { /* Blaster barrel */
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 30px;
+            background: #555;
+            border-radius: 4px;
+        }
+        #blaster.fire {
+            transform: translateX(-50%) scale(0.95);
+        }
+
+        /* --- Daily Nebraskan Sign --- */
+        #dn-sign {
+            position: absolute;
+            bottom: 20px; /* Changed from top: 20px */
+            left: 50%; /* Changed from 20px */
+            background: #DAA520; /* Gold */
+            border: 8px solid #8B4513; /* Wood */
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.75rem;
+            color: #FFF;
+            text-shadow: 2px 2px 0 #E53E3E, -2px 2px 0 #E53E3E, 2px -2px 0 #E53E3E, -2px -2px 0 #E53E3E; /* Red outline */
+            transform: translateX(-50%) rotate(-5deg); /* Centered and rotated */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        /* --- Targets --- */
+        .target {
+            position: absolute;
+            width: 120px;
+            height: 160px;
+            background-color: #fff;
+            border: 6px solid #E53E3E; /* Red border */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 8px;
+            will-change: transform;
+        }
+        
+        .target.move-1 { animation: move1 10s linear infinite alternate; }
+        .target.move-2 { animation: move2 8s linear infinite alternate; }
+        .target.move-3 { animation: move3 12s linear infinite alternate; }
+        .target.move-4 { animation: move4 9s linear infinite alternate; }
+
+        .target.paused {
+            animation-play-state: paused;
+        }
+
+        @keyframes move1 {
+            from { left: 0%; transform: translateY(120px) scale(0.9); } /* Was 100px */
+            to { left: calc(100% - 120px); transform: translateY(140px) scale(0.95); } /* Was 120px */
+        }
+        @keyframes move2 {
+            from { left: 10%; transform: translateY(160px) scale(0.85); } /* Was 130px */
+            to { left: 80%; transform: translateY(150px) scale(0.9); } /* Was 110px */
+        }
+        @keyframes move3 {
+            from { left: 20%; transform: translateY(200px) scale(0.8); } /* Was 150px */
+            to { left: 70%; transform: translateY(180px) scale(0.85); } /* Was 130px */
+        }
+        @keyframes move4 {
+            from { left: 5%; transform: translateY(240px) scale(0.75); } /* Was 170px */
+            to { left: calc(100% - 125px); transform: translateY(220px) scale(0.8); } /* Was 150px */
+        }
+
+        .target-graphic {
+            width: 100%;
+            height: 60%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle, #E53E3E 10%, transparent 10%),
+                radial-gradient(circle, #FFF 20%, transparent 20%),
+                radial-gradient(circle, #E53E3E 30%, transparent 30%),
+                radial-gradient(circle, #FFF 40%, transparent 40%),
+                radial-gradient(circle, #E53E3E 50%, #FFF 50%);
+            border: 2px solid #333;
+        }
+
+        .target-text {
+            height: 40%;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: center;
+            padding-top: 5px;
+            overflow: hidden;
+            color: #333;
+        }
+
+        .target.correct {
+            background-color: #4CAF50; /* Green */
+            border-color: #388E3C;
+            transform: scale(1.1);
+        }
+        .target.incorrect {
+            background-color: #F44336; /* Red */
+            border-color: #D32F2F;
+            transform: scale(0.9);
+            opacity: 0.7;
+        }
+        
+        /* --- UI & State --- */
+        #ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            pointer-events: none; /* Allow clicks through to targets */
+        }
+        
+        #question-box {
+            position: absolute; /* Added */
+            top: 10px; /* Added */
+            left: 50%; /* Added */
+            transform: translateX(-50%); /* Added */
+            z-index: 10; /* Added */
+            width: 90%;
+            max-width: 600px; /* Reduced max-width */
+            margin: 0; /* Removed old margin */
+            background: rgba(255, 255, 255, 0.9);
+            border: 8px solid #D2B48C; /* Reduced border */
+            border-radius: 12px;
+            padding: 0.5rem; /* Reduced padding */
+            text-align: center;
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem; /* Reduced font-size */
+            color: #333;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            pointer-events: all; /* Allow reading */
+            cursor: auto; /* Show normal cursor */
+        }
+
+        #timer-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #ccc;
+            margin-top: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        #timer-bar-inner {
+            height: 100%;
+            width: 100%;
+            background-color: #4CAF50;
+            transition: width 0.1s linear;
+        }
+
+        #score-box {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: white;
+            text-shadow: 3px 3px 0 #E53E3E, -3px -3px 0 #E53E3E, -3px 3px 0 #E53E3E, 3px -3px 0 #E53E3E, 3px 0px 0 #E53E3E, 0px 3px 0 #E53E3E, -3px 0px 0 #E53E3E, 0px -3px 0 #E53E3E; /* Heavy outline */
+            padding: 1rem;
+            z-index: 10;
+            position: absolute; /* Moved to top right */
+            top: 10px;
+            right: 20px;
+        }
+
+        #end-screen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99;
+            color: white;
+            text-align: center;
+            font-family: 'Bangers', cursive;
+            pointer-events: all;
+            cursor: auto;
+        }
+        #end-screen h2 {
+            font-size: 5rem;
+            text-shadow: 4px 4px 0 #E53E3E;
+        }
+        #end-screen p {
+            font-size: 3rem;
+            margin: 0.5rem 0;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+        }
+        #play-again-btn {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            padding: 0.75rem 2rem;
+            margin-top: 1rem;
+            background-color: #FFD700; /* Gold */
+            color: #333;
+            border: 4px solid #DAA520;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #play-again-btn:hover {
+            transform: scale(1.05);
+            background-color: #FFEC8B;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        
+        <!-- 1. The Shooting Gallery (Sky) -->
+        <div id="shooting-gallery">
+            
+            <!-- Question (MOVED TO HERE) -->
+            <div id="question-box">
+                <div id="question-text">Welcome to DN Target Practice!</div>
+                <div id="timer-bar">
+                    <div id="timer-bar-inner"></div>
+                </div>
+            </div>
+
+            <!-- Targets -->
+            <div id="target-0" class="target move-1">
+                <div class="target-graphic"></div>
+                <div class="target-text">Answer 1</div>
+            </div>
+            <div id="target-1" class="target move-2">
+                <div class="target-graphic"></div>
+                <div class="target-text">Answer 2</div>
+            </div>
+            <div id="target-2" class="target move-3">
+                <div class="target-graphic"></div>
+                <div class="target-text">Answer 3</div>
+            </div>
+            <div id="target-3" class="target move-4">
+                <div class="target-graphic"></div>
+                <div class="target-text">Answer 4</div>
+            </div>
+            
+            <!-- Score -->
+            <div id="score-box">Score: 0</div>
+        </div>
+        
+        <!-- 2. The Shooter Stall (Counter) -->
+        <div id="shooter-stall">
+            
+            <!-- Daily Nebraskan Sign (MOVED TO HERE) -->
+            <div id="dn-sign">The Daily Nebraskan</div>
+
+            <!-- Question (MOVED FROM HERE) -->
+            <!--
+            <div id="question-box">
+                <div id="question-text">Welcome to DN Target Practice!</div>
+                <div id="timer-bar">
+                    <div id="timer-bar-inner"></div>
+                </div>
+            </div>
+            -->
+            <div id="blaster"></div>
+        </div>
+
+        <!-- 3. UI Overlay (End Screen) -->
+        <div id="ui-overlay">
+            <!-- This is now just a container for the end screen -->
+        </div>
+
+        <!-- 4. End Screen (Hidden) -->
+        <div id="end-screen">
+            <h2>Game Over!</h2>
+            <p>Your Final Score:</p>
+            <p id="final-score">0</p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- All Questions Data ---
+        // Moved all questions inside the script to avoid fetch errors.
+        const ALL_QUESTIONS = [
+            {
+                "question": "Who is the author of 'Secrets of the Killing State' who spoke at UNL?",
+                "options": ["Corinna Lain", "Eric Berger", "Delaney Woltman", "Jay Chapman"],
+                "correct": 0
+            },
+            {
+                "question": "Which UNL College of Law professor's research helped inspire Corinna Lain?",
+                "options": ["Rodney Bennett", "Eric Berger", "Mark Button", "Jay Chapman"],
+                "correct": 1
+            },
+            {
+                "question": "In 1977, Dr. Jay Chapman admitted he did *not* use what to create the lethal injection drug?",
+                "options": ["Fentanyl", "Anesthesia", "Science / Research", "Tubing"],
+                "correct": 2
+            },
+            {
+                "question": "According to Lain, lethal injection is administered by whom?",
+                "options": ["Doctors", "The Governor", "Corinna Lain", "Non-medical corrections officers"],
+                "correct": 3
+            },
+            {
+                "question": "What is the name of the freshman meteorology student from Elkhorn?",
+                "options": ["Lizzie Aurit", "Katelyn Fryzek", "Norah Fleming", "Dawn Hume Englebert"],
+                "correct": 0
+            },
+            {
+                "question": "What weather event in Elkhorn cemented Lizzie Aurit's decision to attend UNL?",
+                "options": ["A blizzard", "An EF-4 tornado", "A flood", "A heatwave"],
+                "correct": 1
+            },
+            {
+                "question": "Chancellor Bennett is proposing program cuts to address what size of budget deficit?",
+                "options": ["$75 million", "$100 million", "$27.5 million", "$1 million"],
+                "correct": 2
+            },
+            {
+                "question": "The university identified programs for elimination using a 'data-driven approach' based on what?",
+                "options": ["Student votes", "Professor requests", "Alumni donations", "Metrics (for teaching and research)"],
+                "correct": 3
+            },
+            {
+                "question": "Human skeletal remains were found on Oct. 10 at what Nebraska location?",
+                "options": ["Scotts Bluff National Monument", "Memorial Stadium", "Elkhorn", "Arrowhead Stadium"],
+                "correct": 0
+            },
+            {
+                "question": "The investigation involves Chance Englebert, a man missing since what year?",
+                "options": ["2018", "2019", "1977", "2025"],
+                "correct": 1
+            },
+            {
+                "question": "What did Chance Englebert’s family confirm was found with the human remains?",
+                "options": ["A map", "A vehicle", "Items belonging to Chance", "A backpack"],
+                "correct": 2
+            },
+            {
+                "question": "Professionals from which university are assisting with the forensic examination?",
+                "options": ["Creighton University", "South Dakota State", "Temple University", "University of Nebraska at Omaha (UNO)"],
+                "correct": 3
+            },
+            {
+                "question": "What is the Nebraska Division II hockey club's current record?",
+                "options": ["10-2-0", "4-1-0", "3-10-0", "3-1-0"],
+                "correct": 0
+            },
+            {
+                "question": "Who are the three sophomores on the Huskers' 'lethal' top offensive line?",
+                "options": ["Rounds, Worth, and Schneider", "Beach, Stadler, and Lucius", "Morgan, Salado, and Nelson", "Decker, Brickle, and Rhule"],
+                "correct": 1
+            },
+            {
+                "question": "How many total goals did the Huskers score over their last two series sweeps?",
+                "options": ["4", "8", "20", "40"],
+                "correct": 2
+            },
+            {
+                "question": "Who is the South Dakota State sophomore goalie with a 0.980 save percentage?",
+                "options": ["Jacob Morgan", "Jaden Salado", "Laken Decker", "Addison Ronning"],
+                "correct": 3
+            },
+            {
+                "question": "In Matt Rhule’s first two seasons at Nebraska, what was his record in one-score games?",
+                "options": ["3-10", "3-1", "0-4", "10-3"],
+                "correct": 0
+            },
+            {
+                "question": "This season, what is Coach Rhule’s improved record in one-score games?",
+                "options": ["10-3", "3-1", "3-10", "0-4"],
+                "correct": 1
+            },
+            {
+                "question": "Which defensive back secured the week one win against Cincinnati with an interception?",
+                "options": ["Dylan Raiola", "Matt Rhule", "Malcolm Hartzog Jr.", "Jake Stadler"],
+                "correct": 2
+            },
+            {
+                "question": "The Huskers are facing which ranked opponent in an upcoming 'blackout night game'?",
+                "options": ["Illinois State", "South Dakota State", "Cincinnati", "No. 23 USC"],
+                "correct": 3
+            }
+        ];
+
+        // --- Game Elements ---
+        const gameContainer = document.getElementById('game-container');
+        const questionBox = document.getElementById('question-box'); // Renamed for clarity
+        const questionTextEl = document.getElementById('question-text');
+        const targets = [
+            document.getElementById('target-0'),
+            document.getElementById('target-1'),
+            document.getElementById('target-2'),
+            document.getElementById('target-3')
+        ];
+        const targetTexts = targets.map(t => t.querySelector('.target-text'));
+        const scoreBox = document.getElementById('score-box');
+        const endScreen = document.getElementById('end-screen');
+        const finalScoreEl = document.getElementById('final-score');
+        const playAgainBtn = document.getElementById('play-again-btn');
+        const timerBarInner = document.getElementById('timer-bar-inner');
+        const blaster = document.getElementById('blaster');
+        const shootingGallery = document.getElementById('shooting-gallery');
+        const shooterStall = document.getElementById('shooter-stall');
+
+        // --- Game State ---
+        let gameQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let gameInProgress = false;
+        let timerInterval;
+        let timeLeft = 10;
+        const GAME_LENGTH = 7;
+        const MAX_POINTS_PER_Q = 100;
+
+        // --- Event Listeners ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set up target click listeners
+            targets.forEach((target, index) => {
+                target.addEventListener('click', () => handleTargetClick(index));
+            });
+
+            // Set up blaster movement
+            // We listen on both the gallery and the stall
+            [shootingGallery, shooterStall].forEach(area => {
+                area.addEventListener('mousemove', moveBlaster);
+            });
+            
+            // Set up "Play Again"
+            playAgainBtn.addEventListener('click', initGame);
+
+            // Start the game!
+            initGame();
+        });
+
+        function moveBlaster(event) {
+            if (!shooterStall || !blaster) return;
+            
+            // Calculate position relative to the shooter stall
+            const stallRect = shooterStall.getBoundingClientRect();
+            let x = event.clientX - stallRect.left;
+
+            // Constrain the blaster to stay within the stall boundaries
+            const minX = blaster.offsetWidth / 2;
+            const maxX = stallRect.width - (blaster.offsetWidth / 2);
+            
+            x = Math.max(minX, Math.min(x, maxX));
+
+            blaster.style.left = `${x}px`;
+        }
+
+        // --- Game Logic ---
+        function initGame() {
+            // 1. Shuffle all questions and pick the first 7
+            gameQuestions = shuffleArray([...ALL_QUESTIONS]).slice(0, GAME_LENGTH);
+            
+            // 2. Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+            gameInProgress = true;
+            
+            // 3. Reset UI
+            scoreBox.textContent = `Score: 0`;
+            endScreen.style.display = 'none';
+            resetTargets();
+            setTargetMovement(true); // Start targets moving
+
+            // 4. Load first question
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= gameQuestions.length) {
+                endGame();
+                return;
+            }
+
+            // 1. Get current question
+            const q = gameQuestions[currentQuestionIndex];
+            
+            // 2. Reset UI for new question
+            resetTargets();
+            gameInProgress = true;
+            setTargetMovement(true);
+
+            // 3. Display question and options
+            questionTextEl.textContent = q.question;
+            q.options.forEach((option, index) => {
+                targetTexts[index].textContent = option;
+            });
+            
+            // 4. Start timer
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = 10; // 10 seconds
+            timerBarInner.style.width = '100%';
+            timerBarInner.style.backgroundColor = '#4CAF50';
+
+            clearInterval(timerInterval); // Clear any old timer
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                const percentLeft = (timeLeft / 10) * 100;
+                timerBarInner.style.width = `${percentLeft}%`;
+                
+                if (percentLeft < 50) timerBarInner.style.backgroundColor = '#FFC107'; // Yellow
+                if (percentLeft < 25) timerBarInner.style.backgroundColor = '#F44336'; // Red
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleAnswer(false, -1); // -1 indicates timeout
+                }
+            }, 100);
+        }
+
+        function handleTargetClick(selectedIndex) {
+            if (!gameInProgress) return;
+
+            // 1. Stop timer and game
+            clearInterval(timerInterval);
+            gameInProgress = false;
+
+            // 2. Animate blaster
+            blaster.classList.add('fire');
+            setTimeout(() => blaster.classList.remove('fire'), 150);
+
+            // 3. Check answer
+            const q = gameQuestions[currentQuestionIndex];
+            const isCorrect = (selectedIndex === q.correct);
+            
+            // 4. Calculate score
+            let points = 0;
+            if (isCorrect) {
+                // Award points based on time left. Max 100, min 10.
+                points = Math.floor((timeLeft / 10) * MAX_POINTS_PER_Q);
+                points = Math.max(10, points); // Ensure a minimum of 10 points
+                score += points;
+                scoreBox.textContent = `Score: ${score}`;
+            }
+
+            // 5. Show result and advance
+            handleAnswer(isCorrect, selectedIndex);
+        }
+
+        function handleAnswer(isCorrect, selectedIndex) {
+            // 1. Stop timer and game
+            clearInterval(timerInterval);
+            gameInProgress = false;
+            
+            // 2. Pause target movement
+            setTargetMovement(false);
+            
+            // 3. Show correct/incorrect styles
+            const correctIndex = gameQuestions[currentQuestionIndex].correct;
+            
+            targets.forEach((target, index) => {
+                if (index === correctIndex) {
+                    target.classList.add('correct');
+                } else if (index === selectedIndex) {
+                    // This was the (wrong) one they clicked
+                    target.classList.add('incorrect');
+                } else {
+                    // Dim other wrong answers
+                    target.classList.add('incorrect'); 
+                }
+            });
+
+            // 4. Move to next question after a delay
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 1500); // 1.5 second delay
+        }
+
+        function resetTargets() {
+            targets.forEach(target => {
+                target.classList.remove('correct', 'incorrect');
+            });
+        }
+        
+        function setTargetMovement(play) {
+            targets.forEach(target => {
+                if (play) {
+                    target.classList.remove('paused');
+                } else {
+                    target.classList.add('paused');
+                }
+            });
+        }
+
+        function endGame() {
+            finalScoreEl.textContent = score;
+            endScreen.style.display = 'flex';
+            setTargetMovement(false); // Stop targets
+        }
+
+        // --- Utility ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+    </script>
+</body>
+</html>
+
+
+
+
+
