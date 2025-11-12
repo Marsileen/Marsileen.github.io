@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNL Music Building Comparison</title>
+    
+    <style>
+        /* Basic page styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Main content styling */
+        .content-wrapper {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .instructions {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* The main slider container */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            /* Set aspect ratio based on your images (1200x900 is 4:3)
+              This prevents layout shifts while loading.
+            */
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Wrapper for the images */
+        .img-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .img-wrapper img {
+            /* Both images fill the container */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures image covers the area */
+            user-select: none; /* Prevents dragging the image itself */
+            pointer-events: none;
+        }
+
+        /* The top image (2025) is clipped */
+        #image-top {
+            /* clip-path starts by showing the left 50%
+              polygon(left-x top-y, right-x top-y, right-x bottom-y, left-x bottom-y)
+            */
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+        }
+
+        /* The slider handle line */
+        #slider {
+            position: absolute;
+            top: 0;
+            left: 50%; /* Start in the middle */
+            width: 4px;
+            height: 100%;
+            background-color: white;
+            cursor: ew-resize; /* East-West resize cursor */
+            
+            /* Center the line on the 'left' position */
+            transform: translateX(-50%); 
+            
+            /* Make it easier to grab */
+            touch-action: none;
+        }
+
+        /* The circular handle with arrows */
+        #slider-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center the circle */
+            
+            width: 44px;
+            height: 44px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            
+            /* Flexbox to center the arrows */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Style for the arrows */
+        #slider-handle span {
+            /* Prevents text selection */
+            user-select: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="content-wrapper">
+        <h1>Check out the changes to UNL's School of Music from 2014-2025</h1>
+        
+        <p class="instructions">
+            <strong>On Desktop:</strong> Click and drag the white circle slider.
+            <br>
+            <strong>On Mobile:</strong> Touch and drag the white circle slider.
+        </p>
+
+        <div id="slider-container" class="slider-container">
+            
+            <div class="img-wrapper">
+                <img id="image-base" src="campusoctober2014.jpg" alt="Campus in October 2014">
+                
+                <img id="image-top" src="campusmarch2025.jpg" alt="Campus in March 2025">
+            </div>
+            
+            <div id="slider">
+                <div id="slider-handle">
+                    <span>&#9664;</span> <span>&#9654;</span> </div>
+            </div>
+
+        </div> </div> <script>
+        // Wait for the DOM to be fully loaded before running the script
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Get references to the interactive elements
+            const container = document.getElementById('slider-container');
+            const topImage = document.getElementById('image-top');
+            const slider = document.getElementById('slider');
+
+            let isDragging = false;
+
+            // --- Event Handlers ---
+
+            // Called when dragging starts (mouse down or touch start)
+            function onDragStart(e) {
+                // Prevent default behaviors like text selection or page scrolling
+                e.preventDefault();
+                isDragging = true;
+                
+                // Add window listeners to track movement *anywhere* on the page
+                window.addEventListener('mousemove', onDrag);
+                window.addEventListener('touchmove', onDrag, { passive: false });
+                
+                window.addEventListener('mouseup', onDragEnd);
+                window.addEventListener('touchend', onDragEnd);
+            }
+
+            // Called when dragging ends (mouse up or touch end)
+            function onDragEnd() {
+                isDragging = false;
+                
+                // Clean up global listeners
+                window.removeEventListener('mousemove', onDrag);
+                window.removeEventListener('touchmove', onDrag);
+                
+                window.removeEventListener('mouseup', onDragEnd);
+                window.removeEventListener('touchend', onDragEnd);
+            }
+
+            // Called during drag (mouse move or touch move)
+            function onDrag(e) {
+                if (!isDragging) return;
+
+                // Prevent scrolling on touch devices
+                if (e.type === 'touchmove') {
+                    e.preventDefault();
+                }
+
+                // Get the horizontal position of the event
+                // Use e.touches[0].clientX for touch events
+                let clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                if (clientX === undefined) return;
+
+                // Calculate position relative to the container
+                let rect = container.getBoundingClientRect();
+                let x = clientX - rect.left;
+
+                // Constrain the position within the container bounds (0% to 100%)
+                let percentage = (x / rect.width) * 100;
+                if (percentage < 0) percentage = 0;
+                if (percentage > 100) percentage = 100;
+
+                // Update the slider position and the image clip-path
+                slider.style.left = percentage + '%';
+                topImage.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
+            }
+
+            // --- Attach Initial Listeners ---
+
+            // Listen for mousedown on the slider
+            slider.addEventListener('mousedown', onDragStart);
+            
+            // Listen for touchstart on the slider
+            // { passive: false } allows us to call e.preventDefault()
+            slider.addEventListener('touchstart', onDragStart, { passive: false });
+
+        });
+    </script>
+
+</body>
+</html>
