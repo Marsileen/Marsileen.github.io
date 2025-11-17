@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temple Building Comparison</title>
+    
+    <style>
+        /* Basic page styling */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            text-align: center;
+            max-width: 600px;
+            color: #222;
+        }
+
+        p {
+            font-size: 1rem;
+            text-align: center;
+            color: #555;
+            margin-top: -10px;
+        }
+
+        /* This rule helps prevent layout issues */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* The main container for the slider */
+        .comparison-container {
+            position: relative; /* Establishes a positioning context for children */
+            width: 90%;
+            max-width: 900px; /* Max size of the slider */
+            margin: 20px auto;
+            
+            /* We force a 4:3 aspect ratio.
+             This is crucial for making two different-sized images align.
+            */
+            aspect-ratio: 4 / 3;
+            
+            overflow: hidden; /* Hides any parts of the image that go outside */
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Base styles for BOTH images */
+        .comparison-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            
+            /* This is the magic:
+             - 'object-fit: cover' makes the image fill the container,
+               maintaining its aspect ratio and cropping any excess.
+             - 'object-position: center' ensures it crops from the center.
+            */
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* This is the wrapper for the "Before" (historic) image.
+         It sits on top and its width is changed by the JavaScript.
+        */
+        .comparison-before-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%; /* Initial state: 50% visible */
+            height: 100%;
+            overflow: hidden; /* This hides the part of the "Before" image that is "slid away" */
+            z-index: 5; /* Sits on top of the "After" image */
+        }
+
+        /* The slider handle itself.
+        */
+        .comparison-handle {
+            position: absolute;
+            top: 0;
+            left: 50%; /* Initial state: 50% (matches the wrapper) */
+            width: 4px;
+            height: 100%;
+            background-color: white;
+            transform: translateX(-50%); /* Centers the line on its 'left' position */
+            cursor: ew-resize; /* "East-West resize" cursor (left-right arrows) */
+            z-index: 10; /* Sits on top of everything */
+        }
+
+        /* This creates the circle "grip" on the handle */
+        .comparison-handle::after {
+            content: '◀ ▶'; /* Unicode left and right triangles */
+            color: #333;
+            font-weight: bold;
+            font-size: 14px;
+            
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center the grip perfectly */
+            
+            background-color: white;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Check out the changes to the Temple Building from the 1920s to 2025</h1>
+    
+    <p>On desktop, click and drag the slider. On mobile, touch and drag.</p>
+
+    <div class="comparison-container" id="comparison-container">
+        
+        <img src="IMG_3867.jpg" alt="The Temple Building in 2025" class="comparison-image">
+        
+        <div class="comparison-before-wrapper" id="comparison-before-wrapper">
+            <img src="58.jpg" alt="The Temple Building in the 1920s" class="comparison-image">
+        </div>
+        
+        <div class="comparison-handle" id="comparison-handle"></div>
+    </div>
+
+
+    <script>
+        // Wait for the document to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Get the elements we need to interact with
+            const container = document.getElementById('comparison-container');
+            const wrapper = document.getElementById('comparison-before-wrapper');
+            const handle = document.getElementById('comparison-handle');
+
+            let isDragging = false; // A flag to track if we are dragging
+
+            // --- Event Handlers ---
+
+            // Function to start the drag
+            const startDrag = (e) => {
+                e.preventDefault(); // Prevents text selection during drag
+                isDragging = true;
+            };
+
+            // Function to end the drag
+            const endDrag = () => {
+                isDragging = false;
+            };
+
+            // Function to move the slider
+            const moveSlider = (e) => {
+                if (!isDragging) return; // Do nothing if we're not dragging
+
+                e.preventDefault();
+                
+                // Get the bounding box of the main container
+                const containerRect = container.getBoundingClientRect();
+                
+                // Get the horizontal position of the mouse or touch
+                // 'e.clientX' is for mouse, 'e.touches[0].clientX' is for touch
+                const clientX = e.clientX || e.touches[0].clientX;
+                
+                // Calculate the position relative to the container
+                let x = clientX - containerRect.left;
+
+                // Clamp the value between 0 and the container's width
+                if (x < 0) x = 0;
+                if (x > containerRect.width) x = containerRect.width;
+
+                // Convert the pixel value to a percentage
+                const percentage = (x / containerRect.width) * 100;
+
+                // Apply the new percentage to the "Before" wrapper and the handle
+                wrapper.style.width = percentage + '%';
+                handle.style.left = percentage + '%';
+            };
+
+            // --- Attach Event Listeners ---
+
+            // For Desktop (Mouse)
+            handle.addEventListener('mousedown', startDrag);
+            window.addEventListener('mouseup', endDrag);
+            window.addEventListener('mousemove', moveSlider);
+
+            // For Mobile (Touch)
+            handle.addEventListener('touchstart', startDrag);
+            window.addEventListener('touchend', endDrag);
+            window.addEventListener('touchmove', moveSlider);
+        });
+    </script>
+
+</body>
+</html>
