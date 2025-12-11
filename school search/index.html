@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebraska School District Chronic Absenteeism</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- CDNs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Find your district's chronic absentee rate</h1>
+            <p class="subtitle">Search below to view historical chronic absenteeism data for Nebraska school districts.</p>
+        </header>
+
+        <div class="search-container">
+            <div class="search-box">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="districtSearch" placeholder="Search for a school district..." autocomplete="off">
+            </div>
+            <div id="searchResults" class="search-results hidden"></div>
+        </div>
+
+        <main id="dashboard" class="dashboard hidden">
+            <div class="district-header">
+                <h2 id="districtName">District Name</h2>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="absenteeChart"></canvas>
+            </div>
+
+            <div class="data-table-container">
+                <h3>Data Breakdown</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>School Year</th>
+                            <th>Chronic Absenteeism Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data rows will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        
+        <div id="loading" class="loading hidden">Loading data...</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
